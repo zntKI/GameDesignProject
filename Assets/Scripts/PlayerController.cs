@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     private enum MovementFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum JumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    private enum WallJumpFeel { HOLLOW_KNIGHT, CELESTE };
+    private enum WallJumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum WallSlideFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
 
 
@@ -87,8 +88,38 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float MAX_FALL_SPEED_CELESTE;
 
+    [Header("Wall sliding variables")]
+    [Space(8)]
+    [SerializeField]
+    private Transform wallCheck;
+    [SerializeField]
+    private float wallSlidingSpeed;
+
+    [Header("Wall jumping variables")]
+    [Space(8)]
+    [SerializeField]
+    private float WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
+    [SerializeField]
+    private float WALL_JUMPING_DURATION_CELESTE;
+    [Space(6)]
+    [SerializeField]
+    private Vector2 WALL_JUMPING_POWER_HOLLOW_KNIGHT;
+    [SerializeField]
+    private Vector2 WALL_JUMPING_POWER_CELESTE;
+    [Space(6)]
+    [SerializeField]
+    private float WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT;
+    [SerializeField]
+    private float WALL_JUMPING_GRAVITY_SCALE_CELESTE;
+
+    [Space(6)]
+    [SerializeField]
+    private float wallJumpingTime = 0.2f;
+
     //General variables
     private Rigidbody2D rb;
+
+    private bool isFacingRight = true;
 
     //Movement variables
     private float dirRaw;
@@ -109,6 +140,19 @@ public class PlayerController : MonoBehaviour
     private bool shouldJump = false;
     private bool shouldVaryJumpHeight = false;
 
+    //Wall slide variables
+    private bool isWallSliding = false;
+
+    //Wall juming variables
+    private bool isWallJumping = false;
+    private float wallJumpingDirection;
+    private float wallJumpingCounter;
+    private float wallJumpingDuration;
+    private Vector2 wallJumpingPower;
+
+    private float wallJumpGravity;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -121,23 +165,32 @@ public class PlayerController : MonoBehaviour
         dirRaw = Input.GetAxisRaw("Horizontal");
 
         //Jump
-        Debug.Log(rb.velocity.y);
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             shouldJump = true;
         }
-
         if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
         {
             shouldVaryJumpHeight = true;
+        }
+
+        ApplyWallJump();
+
+        if (!isWallJumping)
+        {
+            Flip();
         }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        ApplyHorizontalMovement();
-        ApplyJump();
+        if (!isWallJumping)
+        {
+            ApplyHorizontalMovement();
+            ApplyJump();
+        }
+        ApplyWallSlide();
     }
 
     private void ApplyHorizontalMovement()
@@ -190,6 +243,33 @@ public class PlayerController : MonoBehaviour
         float amountToAdd = Mathf.Abs(speedDif) * accAction * Mathf.Sign(speedDif);
 
         rb.AddForce(amountToAdd * Vector2.right);
+
+        #region Friction
+
+        if (IsGrounded() && dirRaw == 0)
+        {
+            float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), 0.2f);
+            amount *= Mathf.Sign(rb.velocity.x);
+            rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+        }
+
+        #endregion
+    }
+
+    private void ApplyWallSlide()
+    {
+        if (wallSlideFeel == WallSlideFeel.HOLLOW_KNIGHT || wallSlideFeel == WallSlideFeel.CELESTE)
+        {
+            if (IsWalled() && !IsGrounded() && dirRaw != 0f)
+            {
+                isWallSliding = true;
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+            }
+            else
+            {
+                isWallSliding = false;
+            }
+        }
     }
 
     private void ApplyJump()
@@ -255,6 +335,84 @@ public class PlayerController : MonoBehaviour
 
             shouldJump = false;
         }
+    }
+
+    private void ApplyWallJump() 
+    {
+        if (wallJumpFeel == WallJumpFeel.MARIO)
+        {
+            return;
+        }
+        else if (wallJumpFeel == WallJumpFeel.HOLLOW_KNIGHT)
+        {
+            wallJumpingDuration = WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
+            wallJumpingPower = WALL_JUMPING_POWER_HOLLOW_KNIGHT;
+
+            wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT; 
+        }
+        else if (wallJumpFeel == WallJumpFeel.CELESTE)
+        {
+            wallJumpingDuration = WALL_JUMPING_DURATION_CELESTE;
+            wallJumpingPower = WALL_JUMPING_POWER_CELESTE;
+
+            wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_CELESTE;
+        }
+
+        if (IsWalled() && !IsGrounded())
+        {
+            isWallJumping = false;
+            wallJumpingDirection = -transform.localScale.x;
+            wallJumpingCounter = wallJumpingTime;
+
+            CancelInvoke(nameof(StopWallJumping));
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+        {
+            isWallJumping = true;
+            rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+            wallJumpingCounter = 0f;
+
+            if (transform.localScale.x != wallJumpingDirection)
+            {
+                isFacingRight = !isFacingRight;
+                Vector3 localScale = transform.localScale;
+                localScale.x *= -1f;
+                transform.localScale = localScale;
+            }
+
+            Invoke(nameof(StopWallJumping), wallJumpingDuration);
+        }
+
+        if (isWallJumping)
+        {
+            rb.gravityScale = wallJumpGravity;
+        }
+    }
+
+    private void StopWallJumping() 
+    {
+        isWallJumping = false;
+    }
+
+    private void Flip()
+    {
+        if (isFacingRight && dirRaw < 0f || !isFacingRight && dirRaw > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
+    }
+
+    private bool IsWalled() 
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, groundLayer);
     }
 
     private bool IsGrounded()

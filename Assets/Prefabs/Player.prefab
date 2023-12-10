@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2427111102178201658}
+  - {fileID: 2751581856143834773}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -97,12 +98,12 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 1913955842443056118}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: fb602ff3b3e147944bcce110e05349e4, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.017463742}
-  m_Size: {x: 0.21, y: 0.3850726}
+  m_Size: {x: 0.18, y: 0.3850726}
   m_Direction: 0
 --- !u!50 &1913955842443056112
 Rigidbody2D:
@@ -139,8 +140,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementFeel: 1
   jumpFeel: 1
-  wallJumpFeel: 0
-  wallSlideFeel: 0
+  wallJumpFeel: 1
+  wallSlideFeel: 1
   MOVE_SPEED_MARIO: 30
   MARIO_MAXIMUM_VEL: 7
   MOVE_SPEED_HOLLOW_KNIGHT: 10
@@ -168,6 +169,15 @@ MonoBehaviour:
   MAX_FALL_SPEED_MARIO: 20
   MAX_FALL_SPEED_HOLLOW_KNIGHT: 20
   MAX_FALL_SPEED_CELESTE: 20
+  wallCheck: {fileID: 2751581856143834773}
+  wallSlidingSpeed: 2
+  WALL_JUMPING_DURATION_HOLLOW_KNIGHT: 0.2
+  WALL_JUMPING_DURATION_CELESTE: 0.25
+  WALL_JUMPING_POWER_HOLLOW_KNIGHT: {x: 2, y: 15}
+  WALL_JUMPING_POWER_CELESTE: {x: 3, y: 12}
+  WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT: 3
+  WALL_JUMPING_GRAVITY_SCALE_CELESTE: 4
+  wallJumpingTime: 0.2
 --- !u!1 &2087918581003950655
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,4 +208,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1913955842443056125}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6637464125760004442
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2751581856143834773}
+  m_Layer: 0
+  m_Name: WallCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2751581856143834773
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6637464125760004442}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.099, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1913955842443056125}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
