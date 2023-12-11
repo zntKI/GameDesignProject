@@ -604,7 +604,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104324038}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.98, y: 1.94, z: -0.06485348}
+  m_LocalPosition: {x: -0.02, y: 8.57, z: -0.06485348}
   m_LocalScale: {x: -2.981878, y: 9.802516, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1030,24 +1030,40 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: WALL_JUMPING_POWER_CELESTE.x
-      value: 3
+      propertyPath: jumpFeel
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: WALL_JUMPING_POWER_CELESTE.y
-      value: 12
+      propertyPath: movementFeel
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: WALL_JUMPING_DURATION_CELESTE
-      value: 0.25
+      propertyPath: wallJumpFeel
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: WALL_JUMPING_GRAVITY_SCALE_CELESTE
-      value: 4
+      propertyPath: wallSlideFeel
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: wallSlidingSpeed
+      value: 4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: JUMP_POWER_CELESTE
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: JUMP_POWER_HOLLOW_KNIGHT
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056118, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955842443056118, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056125, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
       propertyPath: m_RootOrder

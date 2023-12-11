@@ -164,6 +164,8 @@ public class PlayerController : MonoBehaviour
         //Horizontal movement
         dirRaw = Input.GetAxisRaw("Horizontal");
 
+        
+
         //Jump
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
@@ -215,9 +217,11 @@ public class PlayerController : MonoBehaviour
             }
             else if (lastDirRaw != 0 && rb.velocity.x != 0)
             {
-                rb.AddForce(-lastDirRaw * moveSpeed * Vector2.right);
+                rb.AddForce(-lastDirRaw * MARIO_MAXIMUM_VEL * Vector2.right);
                 if (Mathf.Sign(rb.velocity.x) != Mathf.Sign(lastDirRaw))
                 {
+                    //Debug.Log(rb.velocity.x);
+                    rb.velocity = new Vector2(0, rb.velocity.y);
                     lastDirRaw = 0;
                 }
             }
@@ -244,16 +248,19 @@ public class PlayerController : MonoBehaviour
 
         rb.AddForce(amountToAdd * Vector2.right);
 
-        #region Friction
-
-        if (IsGrounded() && dirRaw == 0)
+        if (movementFeel == MovementFeel.HOLLOW_KNIGHT || movementFeel == MovementFeel.CELESTE)
         {
-            float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), 0.2f);
-            amount *= Mathf.Sign(rb.velocity.x);
-            rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
-        }
+            #region Friction
 
-        #endregion
+            if (IsGrounded() && dirRaw == 0)
+            {
+                float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), 0.2f);
+                amount *= Mathf.Sign(rb.velocity.x);
+                rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+            }
+
+            #endregion
+        }
     }
 
     private void ApplyWallSlide()
@@ -263,11 +270,16 @@ public class PlayerController : MonoBehaviour
             if (IsWalled() && !IsGrounded() && dirRaw != 0f)
             {
                 isWallSliding = true;
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+                rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
+                rb.gravityScale = 0;
             }
             else
             {
                 isWallSliding = false;
+                if (IsWalled() && dirRaw == 0)
+                {
+                    rb.gravityScale = originalGravityScale;
+                }
             }
         }
     }
@@ -397,6 +409,13 @@ public class PlayerController : MonoBehaviour
     private void StopWallJumping() 
     {
         isWallJumping = false;
+
+        Debug.Log(Mathf.Sign(wallJumpingDirection) == dirRaw);
+        //Increasing gravity scale so that the player doesn't try to misuse the wall jumping mechanic by doing more a Celeste thing
+        if (wallJumpFeel == WallJumpFeel.HOLLOW_KNIGHT && Mathf.Sign(wallJumpingDirection) == dirRaw)
+        {
+            rb.gravityScale = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT * 1.3f;
+        }
     }
 
     private void Flip()
