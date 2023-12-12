@@ -118,6 +118,7 @@ public class PlayerController : MonoBehaviour
 
     //General variables
     private Rigidbody2D rb;
+    private PhysicsMaterial2D material2D;
 
     private bool isFacingRight = true;
 
@@ -157,6 +158,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        material2D = GetComponent<CapsuleCollider2D>().sharedMaterial;
     }
 
     void Update()
@@ -199,6 +201,8 @@ public class PlayerController : MonoBehaviour
     {
         if (movementFeel == MovementFeel.MARIO)
         {
+            material2D.friction = 0.2f;
+
             moveSpeed = MOVE_SPEED_MARIO;
 
             if (dirRaw != 0)
@@ -217,11 +221,9 @@ public class PlayerController : MonoBehaviour
             }
             else if (lastDirRaw != 0 && rb.velocity.x != 0)
             {
-                rb.AddForce(-lastDirRaw * MARIO_MAXIMUM_VEL * Vector2.right);
+                rb.AddForce(-lastDirRaw * MARIO_MAXIMUM_VEL / 5 * Vector2.right);
                 if (Mathf.Sign(rb.velocity.x) != Mathf.Sign(lastDirRaw))
                 {
-                    //Debug.Log(rb.velocity.x);
-                    rb.velocity = new Vector2(0, rb.velocity.y);
                     lastDirRaw = 0;
                 }
             }
@@ -229,12 +231,16 @@ public class PlayerController : MonoBehaviour
         }
         else if (movementFeel == MovementFeel.HOLLOW_KNIGHT)
         {
+            material2D.friction = 0f;
+
             moveSpeed = MOVE_SPEED_HOLLOW_KNIGHT;
             accelRate = ACCEL_RATE_HOLLOW_KNIGHT;
             deccelRate = DECCEL_RATE_HOLLOW_KNIGHT;
         }
         else
         {
+            material2D.friction = 0f;
+
             moveSpeed = MOVE_SPEED_CELESTE;
             accelRate = ACCEL_RATE_CELESTE;
             deccelRate = DECCEL_RATE_CELESTE;
@@ -267,7 +273,9 @@ public class PlayerController : MonoBehaviour
     {
         if (wallSlideFeel == WallSlideFeel.HOLLOW_KNIGHT || wallSlideFeel == WallSlideFeel.CELESTE)
         {
-            if (IsWalled() && !IsGrounded() && dirRaw != 0f)
+            bool isWalled = IsWalled();
+
+            if (isWalled && !IsGrounded() && dirRaw != 0f)
             {
                 isWallSliding = true;
                 rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
@@ -276,7 +284,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 isWallSliding = false;
-                if (IsWalled() && dirRaw == 0)
+                if ( (isWalled && dirRaw == 0) || (!isWalled && dirRaw != 0) )
                 {
                     rb.gravityScale = originalGravityScale;
                 }
@@ -414,7 +422,7 @@ public class PlayerController : MonoBehaviour
         //Increasing gravity scale so that the player doesn't try to misuse the wall jumping mechanic by doing more a Celeste thing
         if (wallJumpFeel == WallJumpFeel.HOLLOW_KNIGHT && Mathf.Sign(wallJumpingDirection) == dirRaw)
         {
-            rb.gravityScale = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT * 1.3f;
+            rb.gravityScale = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT * 5f;
         }
     }
 
