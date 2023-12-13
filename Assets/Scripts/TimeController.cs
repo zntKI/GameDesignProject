@@ -10,8 +10,6 @@ public class TimeController : MonoBehaviour
     private float startTimeScale;
     private float startFixedDeltaTime;
 
-    private bool isInSlowMotion = false;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -19,28 +17,15 @@ public class TimeController : MonoBehaviour
         startFixedDeltaTime = Time.fixedDeltaTime;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            isInSlowMotion = isInSlowMotion ? StopSlowMotion() : StartSlowMotion();
-        }
-    }
-
-    private bool StartSlowMotion()
+    public void StartSlowMotion()
     {
         Time.timeScale = slowMotionTimeScale;
         Time.fixedDeltaTime = startFixedDeltaTime * slowMotionTimeScale;
-
-        return true;
     }
 
-    private bool StopSlowMotion() 
+    public void StopSlowMotion() 
     {
         Time.timeScale = startTimeScale;
         Time.fixedDeltaTime = startFixedDeltaTime;
-
-        return false;
     }
 }
