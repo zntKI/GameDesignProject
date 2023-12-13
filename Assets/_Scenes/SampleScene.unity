@@ -1029,49 +1029,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: jumpFeel
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: movementFeel
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: wallJumpFeel
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: wallSlideFeel
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: wallSlidingSpeed
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: JUMP_POWER_CELESTE
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: JUMP_POWER_HOLLOW_KNIGHT
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: GRAVITY_SCALE_HOLLOW_KNIGHT
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: WALL_JUMPING_POWER_HOLLOW_KNIGHT.y
-      value: 17
-      objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056118, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 1913955842443056118, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056125, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
       propertyPath: m_RootOrder
