@@ -25,6 +25,8 @@ public class TimeController : MonoBehaviour
 
     public void StopSlowMotion() 
     {
+        //TODO: Make it slowly go back to normal speed
+
         Time.timeScale = startTimeScale;
         Time.fixedDeltaTime = startFixedDeltaTime;
     }
