@@ -15,4 +15,9 @@ public class AbilityStateController : MonoBehaviour
     {
         
     }
+
+    public void UpdateState(CurrentAbilities currentAbilities) 
+    { 
+        
+    }
 }

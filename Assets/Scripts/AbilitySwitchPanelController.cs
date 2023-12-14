@@ -11,36 +11,21 @@ public class AbilitySwitchPanelController : MonoBehaviour
 
     private RectTransform panelRectTransform;
     private TimeController timeController;
+    private AbilityStateController abilityStateController;
 
     private bool isShown = false;
 
     private int currentAbilitySelectedIndex = 0;
     private int abilityCount;
 
-    private struct CurrentAbilities
-    {
-        internal string currentMoveFeel;
-        internal string currentJumpFeel;
-        internal string currentWallJumpFeel;
-        internal string currentWallSlideFeel;
-        internal string currentSpecialAbility;
-
-        internal CurrentAbilities(string currentMoveFeel, string currentJumpFeel, string currentWallJumpFeel, string currentWallSlideFeel, string currentSpecialAbility)
-        {
-            this.currentMoveFeel = currentMoveFeel;
-            this.currentJumpFeel = currentJumpFeel;
-            this.currentWallJumpFeel = currentWallJumpFeel;
-            this.currentWallSlideFeel = currentWallSlideFeel;
-            this.currentSpecialAbility = currentSpecialAbility;
-        }
-    }
-    CurrentAbilities currentAbilities;
+    private CurrentAbilities currentAbilities;
 
     // Start is called before the first frame update
     void Start()
     {
         panelRectTransform = abilitySwitchPanel.GetComponent<RectTransform>();
         timeController = GetComponent<TimeController>();
+        abilityStateController = GetComponent<AbilityStateController>();
 
         SetAbilities();
     }
@@ -156,8 +141,72 @@ public class AbilitySwitchPanelController : MonoBehaviour
             isShown = false;
 
             //Update the ability state
+            UpdateAbilityState();
 
             timeController.StopSlowMotion();
         }
+    }
+
+    private void UpdateAbilityState()
+    {
+        //Update the cuurentAbilities
+        UpdateCurrentAbilities();
+
+        //Update the state by calling a method from the AbilityStateController
+        abilityStateController.UpdateState(currentAbilities);
+    }
+
+    private void UpdateCurrentAbilities()
+    {
+        Transform outerContainer = abilitySwitchPanel.transform;
+        for (int i = 0; i < abilityCount; i++)
+        {
+            Transform innerContainer = outerContainer.GetChild(i);
+            GameObject innerContainerObject = innerContainer.gameObject;
+            for (int j = 0; j < innerContainer.childCount; j++)
+            {
+                GameObject imageOption = innerContainer.GetChild(j).gameObject;
+
+                bool comparisonCondition = imageOption.activeSelf && currentAbilities.currentMoveFeel != imageOption.name;
+                if (innerContainerObject.name.Contains("MoveFeel") && comparisonCondition)
+                {
+                    currentAbilities.currentMoveFeel = imageOption.name;
+                }
+                else if (innerContainerObject.name.Contains("JumpFeel") && comparisonCondition)
+                {
+                    currentAbilities.currentJumpFeel = imageOption.name;
+                }
+                else if (innerContainerObject.name.Contains("WallJumpFeel") && comparisonCondition)
+                {
+                    currentAbilities.currentWallJumpFeel = imageOption.name;
+                }
+                else if (innerContainerObject.name.Contains("WallSlideFeel") && comparisonCondition)
+                {
+                    currentAbilities.currentWallSlideFeel = imageOption.name;
+                }
+                else if (innerContainerObject.name.Contains("Special") && comparisonCondition)
+                {
+                    currentAbilities.currentSpecialAbility = imageOption.name;
+                }
+            }
+        }
+    }
+}
+
+public struct CurrentAbilities
+{
+    public string currentMoveFeel { get; internal set; }
+    public string currentJumpFeel { get; internal set; }
+    public string currentWallJumpFeel { get; internal set; }
+    public string currentWallSlideFeel { get; internal set; }
+    public string currentSpecialAbility { get; internal set; }
+
+    internal CurrentAbilities(string currentMoveFeel, string currentJumpFeel, string currentWallJumpFeel, string currentWallSlideFeel, string currentSpecialAbility)
+    {
+        this.currentMoveFeel = currentMoveFeel;
+        this.currentJumpFeel = currentJumpFeel;
+        this.currentWallJumpFeel = currentWallJumpFeel;
+        this.currentWallSlideFeel = currentWallSlideFeel;
+        this.currentSpecialAbility = currentSpecialAbility;
     }
 }
