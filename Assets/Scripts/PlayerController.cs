@@ -418,7 +418,6 @@ public class PlayerController : MonoBehaviour
     {
         isWallJumping = false;
 
-        Debug.Log(Mathf.Sign(wallJumpingDirection) == dirRaw);
         //Increasing gravity scale so that the player doesn't try to misuse the wall jumping mechanic by doing more a Celeste thing
         if (wallJumpFeel == WallJumpFeel.HOLLOW_KNIGHT && Mathf.Sign(wallJumpingDirection) == dirRaw)
         {
