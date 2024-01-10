@@ -175,7 +175,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
                 }
                 else if (innerContainerObject.name.Contains("Special"))
                 {
-                    //currentAbilities.currentSpecialAbility = imageOption.name;
+                    player.UpdateSpecialAbility(imageOption.name);
                 }
             }
         }

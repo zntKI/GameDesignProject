@@ -138,10 +138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cca0556faad42c49b7ab01c91e4fe2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementFeel: 1
-  jumpFeel: 1
-  wallJumpFeel: 1
-  wallSlideFeel: 1
   MOVE_SPEED_MARIO: 30
   MARIO_MAXIMUM_VEL: 7
   MOVE_SPEED_HOLLOW_KNIGHT: 10
@@ -178,6 +174,7 @@ MonoBehaviour:
   WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT: 3
   WALL_JUMPING_GRAVITY_SCALE_CELESTE: 4
   wallJumpingTime: 0.2
+  dashPower: 10
 --- !u!1 &2087918581003950655
 GameObject:
   m_ObjectHideFlags: 0

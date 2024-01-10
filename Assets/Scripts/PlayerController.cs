@@ -9,12 +9,14 @@ public class PlayerController : MonoBehaviour
     private enum JumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum WallJumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum WallSlideFeel { MARIO, HOLLOW_KNIGHT_CELESTE };
+    private enum SpecialAbility { DASH, DOUBLE_JUMP };
 
 
     private MovementFeel movementFeel;
     private JumpFeel jumpFeel;
     private WallJumpFeel wallJumpFeel;
     private WallSlideFeel wallSlideFeel;
+    private SpecialAbility specialAbility;
 
     [Header("Movement variables")]
     [Space(8)]
@@ -147,6 +149,15 @@ public class PlayerController : MonoBehaviour
 
     private float wallJumpGravity;
 
+    //Dash variables
+    private bool isDashing = false;
+    private bool canDash = true;
+    [SerializeField]
+    private float dashPower = 10f;
+    [SerializeField]
+    private float dashingTime = 0.3f;
+    private Vector2 dashDirection = Vector2.zero;
+
 
     // Start is called before the first frame update
     void Start()
@@ -157,6 +168,7 @@ public class PlayerController : MonoBehaviour
         UpdateJumpFeel("MARIO");
         UpdateWallSlideFeel("MARIO");
         UpdateWallJumpFeel("MARIO");
+        UpdateSpecialAbility("DASH");
     }
 
     private void InitializeDependencies()
@@ -188,17 +200,44 @@ public class PlayerController : MonoBehaviour
         {
             Flip();
         }
+
+        if (specialAbility == SpecialAbility.DASH && Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        {
+            isDashing = true;
+            canDash = false;
+            dashDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+            if (dashDirection == Vector2.zero)
+            {
+                dashDirection = new Vector2(transform.localScale.x, 0).normalized;
+            }
+            StartCoroutine(StopDashing());
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (IsGrounded())
+        {
+            canDash = true;
+        }
+
         if (!isWallJumping)
         {
             ApplyHorizontalMovement();
             ApplyJump();
         }
         ApplyWallSlide();
+        if (isDashing)
+        {
+            rb.velocity = new Vector2(dashPower * dashDirection.x, dashPower * dashDirection.y);
+        }
+    }
+
+    private IEnumerator StopDashing()
+    {
+        yield return new WaitForSeconds(dashingTime);
+        isDashing = false;
     }
 
     private void ApplyHorizontalMovement()
@@ -503,6 +542,23 @@ public class PlayerController : MonoBehaviour
                 wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_CELESTE;
                 break;
             default:
+                Debug.Log("Wrong image name in the game hierarchy!!!");
+                break;
+        }
+    }
+
+    public void UpdateSpecialAbility(string currentSpecialAbility)
+    {
+        switch (currentSpecialAbility)
+        {
+            case "DASH":
+                specialAbility = SpecialAbility.DASH;
+                break;
+            case "DOUBLE_JUMP":
+                specialAbility = SpecialAbility.DOUBLE_JUMP;
+                break;
+            default:
+                Debug.Log("Wrong image name in the game hierarchy!!!");
                 break;
         }
     }
