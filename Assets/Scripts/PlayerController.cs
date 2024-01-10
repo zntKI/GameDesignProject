@@ -158,6 +158,8 @@ public class PlayerController : MonoBehaviour
     private float dashingTime = 0.3f;
     private Vector2 dashDirection = Vector2.zero;
 
+    private bool doubleJump;
+
 
     // Start is called before the first frame update
     void Start()
@@ -168,7 +170,7 @@ public class PlayerController : MonoBehaviour
         UpdateJumpFeel("MARIO");
         UpdateWallSlideFeel("MARIO");
         UpdateWallJumpFeel("MARIO");
-        UpdateSpecialAbility("DASH");
+        UpdateSpecialAbility("DOUBLE_JUMP");
     }
 
     private void InitializeDependencies()
@@ -182,12 +184,23 @@ public class PlayerController : MonoBehaviour
         //Horizontal movement
         dirRaw = Input.GetAxisRaw("Horizontal");
 
-        
+        if (IsGrounded() && !Input.GetButton("Jump"))
+        {
+            doubleJump = false;
+        }
 
         //Jump
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        if (Input.GetButtonDown("Jump"))
         {
-            shouldJump = true;
+            if (specialAbility == SpecialAbility.DOUBLE_JUMP && (IsGrounded() || doubleJump))
+            {
+                shouldJump = true;
+                doubleJump = !doubleJump;
+            }
+            else if (specialAbility != SpecialAbility.DOUBLE_JUMP && IsGrounded())
+            {
+                shouldJump = true;
+            }
         }
         if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
         {
