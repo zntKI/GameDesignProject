@@ -258,6 +258,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 21958302}
   m_CullTransparentMesh: 1
+--- !u!114 &207254624 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+  m_PrefabInstance: {fileID: 1913955842103922293}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cca0556faad42c49b7ab01c91e4fe2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &210321869
 GameObject:
   m_ObjectHideFlags: 0
@@ -3358,7 +3369,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1482447676}
   - component: {fileID: 1482447678}
-  - component: {fileID: 1482447679}
   - component: {fileID: 1482447677}
   m_Layer: 0
   m_Name: AbilitySwitcher
@@ -3395,6 +3405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilitySwitchPanel: {fileID: 325383626}
+  player: {fileID: 207254624}
 --- !u!114 &1482447678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3408,18 +3419,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slowMotionTimeScale: 0.01
---- !u!114 &1482447679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1482447674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 866409a58b1881647bacb168081f5d55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1488123675
 GameObject:
   m_ObjectHideFlags: 0
@@ -5197,6 +5196,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: jumpFeel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: movementFeel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: wallJumpFeel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+      propertyPath: wallSlideFeel
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1913955842443056118, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
       propertyPath: m_Name
       value: Player

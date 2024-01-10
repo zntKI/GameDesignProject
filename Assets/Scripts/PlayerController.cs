@@ -8,18 +8,12 @@ public class PlayerController : MonoBehaviour
     private enum MovementFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum JumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum WallJumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    private enum WallSlideFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
+    private enum WallSlideFeel { MARIO, HOLLOW_KNIGHT_CELESTE };
 
 
-    [Header("Basic movement options")]
-    [Space(8)]
-    [SerializeField]
     private MovementFeel movementFeel;
-    [SerializeField]
     private JumpFeel jumpFeel;
-    [SerializeField]
     private WallJumpFeel wallJumpFeel;
-    [SerializeField]
     private WallSlideFeel wallSlideFeel;
 
     [Header("Movement variables")]
@@ -157,6 +151,16 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        InitializeDependencies();
+
+        UpdateMoveFeel("MARIO");
+        UpdateJumpFeel("MARIO");
+        UpdateWallSlideFeel("MARIO");
+        UpdateWallJumpFeel("MARIO");
+    }
+
+    private void InitializeDependencies()
+    {
         rb = GetComponent<Rigidbody2D>();
         material2D = GetComponent<CapsuleCollider2D>().sharedMaterial;
     }
@@ -201,10 +205,6 @@ public class PlayerController : MonoBehaviour
     {
         if (movementFeel == MovementFeel.MARIO)
         {
-            material2D.friction = 0.2f;
-
-            moveSpeed = MOVE_SPEED_MARIO;
-
             if (dirRaw != 0)
             {
                 if (IsGrounded())
@@ -227,51 +227,36 @@ public class PlayerController : MonoBehaviour
                     lastDirRaw = 0;
                 }
             }
-            return;
-        }
-        else if (movementFeel == MovementFeel.HOLLOW_KNIGHT)
-        {
-            material2D.friction = 0f;
-
-            moveSpeed = MOVE_SPEED_HOLLOW_KNIGHT;
-            accelRate = ACCEL_RATE_HOLLOW_KNIGHT;
-            deccelRate = DECCEL_RATE_HOLLOW_KNIGHT;
         }
         else
         {
-            material2D.friction = 0f;
+            float topSpeed = dirRaw * moveSpeed;
+            float speedDif = topSpeed - rb.velocity.x;
+            float accAction = Mathf.Abs(speedDif) > 0.01f ? accelRate : deccelRate;
 
-            moveSpeed = MOVE_SPEED_CELESTE;
-            accelRate = ACCEL_RATE_CELESTE;
-            deccelRate = DECCEL_RATE_CELESTE;
-        }
+            float amountToAdd = Mathf.Abs(speedDif) * accAction * Mathf.Sign(speedDif);
 
-        float topSpeed = dirRaw * moveSpeed;
-        float speedDif = topSpeed - rb.velocity.x;
-        float accAction = Mathf.Abs(speedDif) > 0.01f ? accelRate : deccelRate;
+            rb.AddForce(amountToAdd * Vector2.right);
 
-        float amountToAdd = Mathf.Abs(speedDif) * accAction * Mathf.Sign(speedDif);
-
-        rb.AddForce(amountToAdd * Vector2.right);
-
-        if (movementFeel == MovementFeel.HOLLOW_KNIGHT || movementFeel == MovementFeel.CELESTE)
-        {
-            #region Friction
-
-            if (IsGrounded() && dirRaw == 0)
+            if (movementFeel == MovementFeel.HOLLOW_KNIGHT || movementFeel == MovementFeel.CELESTE)
             {
-                float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), 0.2f);
-                amount *= Mathf.Sign(rb.velocity.x);
-                rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
-            }
+                #region Friction
 
-            #endregion
+                if (IsGrounded() && dirRaw == 0)
+                {
+                    float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), 0.2f);
+                    amount *= Mathf.Sign(rb.velocity.x);
+                    rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+                }
+
+                #endregion
+            }
         }
     }
 
     private void ApplyWallSlide()
     {
-        if (wallSlideFeel == WallSlideFeel.HOLLOW_KNIGHT || wallSlideFeel == WallSlideFeel.CELESTE)
+        if (wallSlideFeel == WallSlideFeel.HOLLOW_KNIGHT_CELESTE)
         {
             bool isWalled = IsWalled();
 
@@ -294,37 +279,6 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyJump()
     {
-        if (jumpFeel == JumpFeel.MARIO)
-        {
-            originalGravityScale = GRAVITY_SCALE_MARIO;
-
-            jumpPower = JUMP_POWER_MARIO;
-
-            varyGravityAmount = VARY_GRAVITY_AMAOUNT_MARIO;
-            fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_MARIO;
-            maxFallSpeed = MAX_FALL_SPEED_MARIO;
-        }
-        else if (jumpFeel == JumpFeel.HOLLOW_KNIGHT)
-        {
-            originalGravityScale = GRAVITY_SCALE_HOLLOW_KNIGHT;
-
-            jumpPower = JUMP_POWER_HOLLOW_KNIGHT;
-
-            varyGravityAmount = VARY_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
-            fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
-            maxFallSpeed = MAX_FALL_SPEED_HOLLOW_KNIGHT;
-        }
-        else
-        {
-            originalGravityScale = GRAVITY_SCALE_CELESTE;
-
-            jumpPower = JUMP_POWER_CELESTE;
-
-            varyGravityAmount = VARY_GRAVITY_AMAOUNT_CELESTE;
-            fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_CELESTE;
-            maxFallSpeed = MAX_FALL_SPEED_CELESTE;
-        }
-
         if (shouldVaryJumpHeight)
         {
             //rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
@@ -333,7 +287,7 @@ public class PlayerController : MonoBehaviour
             shouldVaryJumpHeight = false;
         }
 
-        if (rb.velocity.y < 0)
+        if (rb.velocity.y < 0f)
         {
             if (rb.velocity.y >= -maxFallSpeed)
             {
@@ -344,7 +298,7 @@ public class PlayerController : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, -maxFallSpeed);
             }
         }
-        else if (rb.velocity.y == 0)
+        else if (rb.velocity.y == 0f)
         {
             rb.gravityScale = originalGravityScale;
         }
@@ -362,20 +316,6 @@ public class PlayerController : MonoBehaviour
         if (wallJumpFeel == WallJumpFeel.MARIO)
         {
             return;
-        }
-        else if (wallJumpFeel == WallJumpFeel.HOLLOW_KNIGHT)
-        {
-            wallJumpingDuration = WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
-            wallJumpingPower = WALL_JUMPING_POWER_HOLLOW_KNIGHT;
-
-            wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT; 
-        }
-        else if (wallJumpFeel == WallJumpFeel.CELESTE)
-        {
-            wallJumpingDuration = WALL_JUMPING_DURATION_CELESTE;
-            wallJumpingPower = WALL_JUMPING_POWER_CELESTE;
-
-            wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_CELESTE;
         }
 
         if (IsWalled() && !IsGrounded())
@@ -444,5 +384,126 @@ public class PlayerController : MonoBehaviour
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+    }
+
+    public void UpdateMoveFeel(string currentMoveFeel)
+    {
+        switch (currentMoveFeel)
+        {
+            case "MARIO":
+                movementFeel = MovementFeel.MARIO;
+
+                material2D.friction = 0.2f;
+                moveSpeed = MOVE_SPEED_MARIO;
+                break;
+            case "HOLLOW_KNIGHT":
+                movementFeel = MovementFeel.HOLLOW_KNIGHT;
+
+                material2D.friction = 0f;
+
+                moveSpeed = MOVE_SPEED_HOLLOW_KNIGHT;
+                accelRate = ACCEL_RATE_HOLLOW_KNIGHT;
+                deccelRate = DECCEL_RATE_HOLLOW_KNIGHT;
+                break;
+            case "CELESTE":
+                movementFeel = MovementFeel.CELESTE;
+
+                material2D.friction = 0f;
+
+                moveSpeed = MOVE_SPEED_CELESTE;
+                accelRate = ACCEL_RATE_CELESTE;
+                deccelRate = DECCEL_RATE_CELESTE;
+                break;
+            default:
+                Debug.Log("Wrong image name in the game hierarchy!!!");
+                break;
+        }
+    }
+
+    public void UpdateJumpFeel(string currentJumpFeel)
+    {
+        switch (currentJumpFeel)
+        {
+            case "MARIO":
+                jumpFeel = JumpFeel.MARIO;
+
+                originalGravityScale = GRAVITY_SCALE_MARIO;
+
+                jumpPower = JUMP_POWER_MARIO;
+
+                varyGravityAmount = VARY_GRAVITY_AMAOUNT_MARIO;
+                fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_MARIO;
+                maxFallSpeed = MAX_FALL_SPEED_MARIO;
+                break;
+            case "HOLLOW_KNIGHT":
+                jumpFeel = JumpFeel.HOLLOW_KNIGHT;
+
+                originalGravityScale = GRAVITY_SCALE_HOLLOW_KNIGHT;
+
+                jumpPower = JUMP_POWER_HOLLOW_KNIGHT;
+
+                varyGravityAmount = VARY_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
+                fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
+                maxFallSpeed = MAX_FALL_SPEED_HOLLOW_KNIGHT;
+                break;
+            case "CELESTE":
+                jumpFeel = JumpFeel.CELESTE;
+
+                originalGravityScale = GRAVITY_SCALE_CELESTE;
+
+                jumpPower = JUMP_POWER_CELESTE;
+
+                varyGravityAmount = VARY_GRAVITY_AMAOUNT_CELESTE;
+                fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_CELESTE;
+                maxFallSpeed = MAX_FALL_SPEED_CELESTE;
+                break;
+            default:
+                Debug.Log("Wrong image name in the game hierarchy!!!");
+                break;
+        }
+    }
+
+    public void UpdateWallSlideFeel(string currentWallSlideFeel)
+    {
+        switch (currentWallSlideFeel)
+        {
+            case "MARIO":
+                wallSlideFeel = WallSlideFeel.MARIO;
+                break;
+            case "HOLLOW_KNIGHT/CELESTE":
+                wallSlideFeel = WallSlideFeel.HOLLOW_KNIGHT_CELESTE;
+                break;
+            default:
+                Debug.Log("Wrong image name in the game hierarchy!!!");
+                break;
+        }
+    }
+
+    public void UpdateWallJumpFeel(string currentWallJumpFeel)
+    {
+        switch (currentWallJumpFeel)
+        {
+            case "MARIO":
+                wallJumpFeel = WallJumpFeel.MARIO;
+                break;
+            case "HOLLOW_KNIGHT":
+                wallJumpFeel = WallJumpFeel.HOLLOW_KNIGHT;
+
+                wallJumpingDuration = WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
+                wallJumpingPower = WALL_JUMPING_POWER_HOLLOW_KNIGHT;
+
+                wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT;
+                break;
+            case "CELESTE":
+                wallJumpFeel = WallJumpFeel.CELESTE;
+
+                wallJumpingDuration = WALL_JUMPING_DURATION_CELESTE;
+                wallJumpingPower = WALL_JUMPING_POWER_CELESTE;
+
+                wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_CELESTE;
+                break;
+            default:
+                break;
+        }
     }
 }
