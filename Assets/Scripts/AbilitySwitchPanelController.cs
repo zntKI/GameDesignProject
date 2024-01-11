@@ -75,7 +75,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
     {
         if (!isShown)
         {
-            panelRectTransform.anchoredPosition = new Vector2(panelRectTransform.anchoredPosition.x, panelRectTransform.anchoredPosition.y - panelRectTransform.rect.height);
+            panelRectTransform.anchoredPosition = new Vector2(panelRectTransform.anchoredPosition.x + panelRectTransform.rect.width, panelRectTransform.anchoredPosition.y);
             isShown = true;
 
             timeController.StartSlowMotion();
@@ -133,7 +133,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
     {
         if (isShown)
         {
-            panelRectTransform.anchoredPosition = new Vector2(panelRectTransform.anchoredPosition.x, panelRectTransform.anchoredPosition.y + panelRectTransform.rect.height);
+            panelRectTransform.anchoredPosition = new Vector2(panelRectTransform.anchoredPosition.x - panelRectTransform.rect.width, panelRectTransform.anchoredPosition.y);
             isShown = false;
 
             //Update the ability state
@@ -157,23 +157,11 @@ public class AbilitySwitchPanelController : MonoBehaviour
                 if (!imageOption.activeSelf || imageOption.name == "Title")
                     continue;
                 
-                if (innerContainerObject.name.Contains("MoveFeel"))
+                if (innerContainerObject.name.Contains("BasicAbilityFeel"))
                 {
-                    player.UpdateMoveFeel(imageOption.name);
+                    player.UpdateBasicAbilityFeel(imageOption.name);
                 }
-                else if (innerContainerObject.name.Contains("WallJumpFeel"))
-                {
-                    player.UpdateWallJumpFeel(imageOption.name);
-                }
-                else if (innerContainerObject.name.Contains("JumpFeel"))
-                {
-                    player.UpdateJumpFeel(imageOption.name);
-                }
-                else if (innerContainerObject.name.Contains("WallSlideFeel"))
-                {
-                    player.UpdateWallSlideFeel(imageOption.name);
-                }
-                else if (innerContainerObject.name.Contains("Special"))
+                else if (innerContainerObject.name.Contains("SpecialAbility"))
                 {
                     player.UpdateSpecialAbility(imageOption.name);
                 }

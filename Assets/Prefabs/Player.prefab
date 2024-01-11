@@ -174,7 +174,8 @@ MonoBehaviour:
   WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT: 3
   WALL_JUMPING_GRAVITY_SCALE_CELESTE: 4
   wallJumpingTime: 0.2
-  dashPower: 10
+  dashPower: 17
+  dashingTime: 0.1
 --- !u!1 &2087918581003950655
 GameObject:
   m_ObjectHideFlags: 0

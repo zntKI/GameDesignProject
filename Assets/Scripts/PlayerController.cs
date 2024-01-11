@@ -5,17 +5,19 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private enum MovementFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    private enum JumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    private enum WallJumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    private enum WallSlideFeel { MARIO, HOLLOW_KNIGHT_CELESTE };
+    //private enum MovementFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
+    //private enum JumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
+    //private enum WallJumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
+    //private enum WallSlideFeel { MARIO, HOLLOW_KNIGHT_CELESTE };
+    private enum BasicAbilityFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum SpecialAbility { DASH, DOUBLE_JUMP };
 
 
-    private MovementFeel movementFeel;
-    private JumpFeel jumpFeel;
-    private WallJumpFeel wallJumpFeel;
-    private WallSlideFeel wallSlideFeel;
+    //private MovementFeel movementFeel;
+    //private JumpFeel jumpFeel;
+    //private WallJumpFeel wallJumpFeel;
+    //private WallSlideFeel wallSlideFeel;
+    private BasicAbilityFeel basicAbilityFeel;
     private SpecialAbility specialAbility;
 
     [Header("Movement variables")]
@@ -166,10 +168,9 @@ public class PlayerController : MonoBehaviour
     {
         InitializeDependencies();
 
-        UpdateMoveFeel("MARIO");
-        UpdateJumpFeel("MARIO");
-        UpdateWallSlideFeel("MARIO");
-        UpdateWallJumpFeel("MARIO");
+        UpdateMoveVariables("MARIO");
+        UpdateJumpVariables("MARIO");
+        UpdateWallJumpVariables("MARIO");
         UpdateSpecialAbility("DOUBLE_JUMP");
     }
 
@@ -255,7 +256,7 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyHorizontalMovement()
     {
-        if (movementFeel == MovementFeel.MARIO)
+        if (basicAbilityFeel == BasicAbilityFeel.MARIO)
         {
             if (dirRaw != 0)
             {
@@ -290,7 +291,7 @@ public class PlayerController : MonoBehaviour
 
             rb.AddForce(amountToAdd * Vector2.right);
 
-            if (movementFeel == MovementFeel.HOLLOW_KNIGHT || movementFeel == MovementFeel.CELESTE)
+            if (basicAbilityFeel == BasicAbilityFeel.HOLLOW_KNIGHT || basicAbilityFeel == BasicAbilityFeel.CELESTE)
             {
                 #region Friction
 
@@ -308,7 +309,7 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyWallSlide()
     {
-        if (wallSlideFeel == WallSlideFeel.HOLLOW_KNIGHT_CELESTE)
+        if (basicAbilityFeel == BasicAbilityFeel.HOLLOW_KNIGHT || basicAbilityFeel == BasicAbilityFeel.CELESTE)
         {
             bool isWalled = IsWalled();
 
@@ -365,7 +366,7 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyWallJump() 
     {
-        if (wallJumpFeel == WallJumpFeel.MARIO)
+        if (basicAbilityFeel == BasicAbilityFeel.MARIO)
         {
             return;
         }
@@ -411,7 +412,7 @@ public class PlayerController : MonoBehaviour
         isWallJumping = false;
 
         //Increasing gravity scale so that the player doesn't try to misuse the wall jumping mechanic by doing more a Celeste thing
-        if (wallJumpFeel == WallJumpFeel.HOLLOW_KNIGHT && Mathf.Sign(wallJumpingDirection) == dirRaw)
+        if (basicAbilityFeel == BasicAbilityFeel.HOLLOW_KNIGHT && Mathf.Sign(wallJumpingDirection) == dirRaw)
         {
             rb.gravityScale = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT * 5f;
         }
@@ -438,19 +439,15 @@ public class PlayerController : MonoBehaviour
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
-    public void UpdateMoveFeel(string currentMoveFeel)
+    private void UpdateMoveVariables(string currentMoveFeel)
     {
         switch (currentMoveFeel)
         {
             case "MARIO":
-                movementFeel = MovementFeel.MARIO;
-
                 material2D.friction = 0.2f;
                 moveSpeed = MOVE_SPEED_MARIO;
                 break;
             case "HOLLOW_KNIGHT":
-                movementFeel = MovementFeel.HOLLOW_KNIGHT;
-
                 material2D.friction = 0f;
 
                 moveSpeed = MOVE_SPEED_HOLLOW_KNIGHT;
@@ -458,8 +455,6 @@ public class PlayerController : MonoBehaviour
                 deccelRate = DECCEL_RATE_HOLLOW_KNIGHT;
                 break;
             case "CELESTE":
-                movementFeel = MovementFeel.CELESTE;
-
                 material2D.friction = 0f;
 
                 moveSpeed = MOVE_SPEED_CELESTE;
@@ -467,18 +462,15 @@ public class PlayerController : MonoBehaviour
                 deccelRate = DECCEL_RATE_CELESTE;
                 break;
             default:
-                Debug.Log("Wrong image name in the game hierarchy!!!");
                 break;
         }
     }
 
-    public void UpdateJumpFeel(string currentJumpFeel)
+    private void UpdateJumpVariables(string currentJumpFeel)
     {
         switch (currentJumpFeel)
         {
             case "MARIO":
-                jumpFeel = JumpFeel.MARIO;
-
                 originalGravityScale = GRAVITY_SCALE_MARIO;
 
                 jumpPower = JUMP_POWER_MARIO;
@@ -488,8 +480,6 @@ public class PlayerController : MonoBehaviour
                 maxFallSpeed = MAX_FALL_SPEED_MARIO;
                 break;
             case "HOLLOW_KNIGHT":
-                jumpFeel = JumpFeel.HOLLOW_KNIGHT;
-
                 originalGravityScale = GRAVITY_SCALE_HOLLOW_KNIGHT;
 
                 jumpPower = JUMP_POWER_HOLLOW_KNIGHT;
@@ -499,8 +489,6 @@ public class PlayerController : MonoBehaviour
                 maxFallSpeed = MAX_FALL_SPEED_HOLLOW_KNIGHT;
                 break;
             case "CELESTE":
-                jumpFeel = JumpFeel.CELESTE;
-
                 originalGravityScale = GRAVITY_SCALE_CELESTE;
 
                 jumpPower = JUMP_POWER_CELESTE;
@@ -510,49 +498,54 @@ public class PlayerController : MonoBehaviour
                 maxFallSpeed = MAX_FALL_SPEED_CELESTE;
                 break;
             default:
-                Debug.Log("Wrong image name in the game hierarchy!!!");
                 break;
         }
     }
 
-    public void UpdateWallSlideFeel(string currentWallSlideFeel)
-    {
-        switch (currentWallSlideFeel)
-        {
-            case "MARIO":
-                wallSlideFeel = WallSlideFeel.MARIO;
-                break;
-            case "HOLLOW_KNIGHT/CELESTE":
-                wallSlideFeel = WallSlideFeel.HOLLOW_KNIGHT_CELESTE;
-                break;
-            default:
-                Debug.Log("Wrong image name in the game hierarchy!!!");
-                break;
-        }
-    }
-
-    public void UpdateWallJumpFeel(string currentWallJumpFeel)
+    private void UpdateWallJumpVariables(string currentWallJumpFeel)
     {
         switch (currentWallJumpFeel)
         {
-            case "MARIO":
-                wallJumpFeel = WallJumpFeel.MARIO;
-                break;
             case "HOLLOW_KNIGHT":
-                wallJumpFeel = WallJumpFeel.HOLLOW_KNIGHT;
-
                 wallJumpingDuration = WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
                 wallJumpingPower = WALL_JUMPING_POWER_HOLLOW_KNIGHT;
 
                 wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT;
                 break;
             case "CELESTE":
-                wallJumpFeel = WallJumpFeel.CELESTE;
-
                 wallJumpingDuration = WALL_JUMPING_DURATION_CELESTE;
                 wallJumpingPower = WALL_JUMPING_POWER_CELESTE;
 
                 wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_CELESTE;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void UpdateBasicAbilityFeel(string currentBasicAbilityFeel)
+    {
+        switch (currentBasicAbilityFeel)
+        {
+            case "MARIO":
+                basicAbilityFeel = BasicAbilityFeel.MARIO;
+
+                UpdateMoveVariables("MARIO");
+                UpdateJumpVariables("MARIO");
+                break;
+            case "HOLLOW_KNIGHT":
+                basicAbilityFeel = BasicAbilityFeel.HOLLOW_KNIGHT;
+
+                UpdateMoveVariables("HOLLOW_KNIGHT");
+                UpdateJumpVariables("HOLLOW_KNIGHT");
+                UpdateWallJumpVariables("HOLLOW_KNIGHT");
+                break;
+            case "CELESTE":
+                basicAbilityFeel = BasicAbilityFeel.CELESTE;
+
+                UpdateMoveVariables("CELESTE");
+                UpdateJumpVariables("CELESTE");
+                UpdateWallJumpVariables("CELESTE");
                 break;
             default:
                 Debug.Log("Wrong image name in the game hierarchy!!!");
