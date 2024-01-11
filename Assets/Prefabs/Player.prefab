@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1913955842443056115}
   - component: {fileID: 1913955842443056112}
   - component: {fileID: 1913955842443056113}
+  - component: {fileID: 932065361}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -136,6 +137,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9cca0556faad42c49b7ab01c91e4fe2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &932065361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913955842443056118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9d725b2e4ea1b748869b8f5375bf733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MOVE_SPEED_MARIO: 30

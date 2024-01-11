@@ -263,7 +263,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1913955842443056113, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
   m_PrefabInstance: {fileID: 1913955842103922293}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 932065356}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9cca0556faad42c49b7ab01c91e4fe2e, type: 3}
@@ -1271,6 +1271,61 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &932065356 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1913955842443056118, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+  m_PrefabInstance: {fileID: 1913955842103922293}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &932065361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932065356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9d725b2e4ea1b748869b8f5375bf733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MOVE_SPEED_MARIO: 30
+  MARIO_MAXIMUM_VEL: 7
+  MOVE_SPEED_HOLLOW_KNIGHT: 10
+  MOVE_SPEED_CELESTE: 10
+  ACCEL_RATE_HOLLOW_KNIGHT: 9
+  ACCEL_RATE_CELESTE: 13
+  DECCEL_RATE_HOLLOW_KNIGHT: 9
+  DECCEL_RATE_CELESTE: 16
+  groundCheck: {fileID: 1661020831}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  GRAVITY_SCALE_MARIO: 4
+  GRAVITY_SCALE_HOLLOW_KNIGHT: 5
+  GRAVITY_SCALE_CELESTE: 4
+  JUMP_POWER_MARIO: 20
+  JUMP_POWER_HOLLOW_KNIGHT: 17
+  JUMP_POWER_CELESTE: 13
+  VARY_GRAVITY_AMAOUNT_MARIO: 2
+  VARY_GRAVITY_AMAOUNT_HOLLOW_KNIGHT: 2
+  VARY_GRAVITY_AMAOUNT_CELESTE: 2
+  FALLING_GRAVITY_AMAOUNT_MARIO: 1.01
+  FALLING_GRAVITY_AMAOUNT_HOLLOW_KNIGHT: 1.07
+  FALLING_GRAVITY_AMAOUNT_CELESTE: 1.07
+  MAX_FALL_SPEED_MARIO: 20
+  MAX_FALL_SPEED_HOLLOW_KNIGHT: 20
+  MAX_FALL_SPEED_CELESTE: 20
+  wallCheck: {fileID: 1671975553}
+  wallSlidingSpeed: 4.5
+  WALL_JUMPING_DURATION_HOLLOW_KNIGHT: 0.2
+  WALL_JUMPING_DURATION_CELESTE: 0.25
+  WALL_JUMPING_POWER_HOLLOW_KNIGHT: {x: 2, y: 17}
+  WALL_JUMPING_POWER_CELESTE: {x: 3, y: 12}
+  WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT: 3
+  WALL_JUMPING_GRAVITY_SCALE_CELESTE: 4
+  wallJumpingTime: 0.2
+  dashPower: 17
+  dashingTime: 0.1
 --- !u!1 &948459360
 GameObject:
   m_ObjectHideFlags: 0
@@ -2368,6 +2423,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1651911459}
   m_CullTransparentMesh: 1
+--- !u!4 &1661020831 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2427111102178201658, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+  m_PrefabInstance: {fileID: 1913955842103922293}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1671975553 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2751581856143834773, guid: 0360271e92f63b746a473227ea8cf181, type: 3}
+  m_PrefabInstance: {fileID: 1913955842103922293}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1886267407
 GameObject:
   m_ObjectHideFlags: 0

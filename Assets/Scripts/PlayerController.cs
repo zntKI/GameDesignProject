@@ -5,116 +5,16 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    //private enum MovementFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    //private enum JumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    //private enum WallJumpFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    //private enum WallSlideFeel { MARIO, HOLLOW_KNIGHT_CELESTE };
     private enum BasicAbilityFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum SpecialAbility { DASH, DOUBLE_JUMP };
 
 
-    //private MovementFeel movementFeel;
-    //private JumpFeel jumpFeel;
-    //private WallJumpFeel wallJumpFeel;
-    //private WallSlideFeel wallSlideFeel;
     private BasicAbilityFeel basicAbilityFeel;
     private SpecialAbility specialAbility;
 
-    [Header("Movement variables")]
-    [Space(8)]
-    [SerializeField]
-    private float MOVE_SPEED_MARIO = 10f;
-    [SerializeField]
-    private float MARIO_MAXIMUM_VEL = 10f;
-    [SerializeField]
-    private float MOVE_SPEED_HOLLOW_KNIGHT = 10f;
-    [SerializeField]
-    private float MOVE_SPEED_CELESTE = 10f;
-    [Space(6)]
-    [SerializeField]
-    private float ACCEL_RATE_HOLLOW_KNIGHT = 9f;
-    [SerializeField]
-    private float ACCEL_RATE_CELESTE = 13f;
-    [Space(6)]
-    [SerializeField]
-    private float DECCEL_RATE_HOLLOW_KNIGHT = 9f;
-    [SerializeField]
-    private float DECCEL_RATE_CELESTE = 16f;
-
-    [Header("Jump variables")]
-    [Space(8)]
-    [SerializeField]
-    private Transform groundCheck;
-    [SerializeField]
-    private LayerMask groundLayer;
-
-    [Space(6)]
-    [SerializeField]
-    private float GRAVITY_SCALE_MARIO;
-    [SerializeField]
-    private float GRAVITY_SCALE_HOLLOW_KNIGHT;
-    [SerializeField]
-    private float GRAVITY_SCALE_CELESTE;
-
-    [Space(6)]
-    [SerializeField]
-    private float JUMP_POWER_MARIO;
-    [SerializeField]
-    private float JUMP_POWER_HOLLOW_KNIGHT;
-    [SerializeField]
-    private float JUMP_POWER_CELESTE;
-
-    [Space(6)]
-    [SerializeField]
-    private float VARY_GRAVITY_AMAOUNT_MARIO;
-    [SerializeField]
-    private float VARY_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
-    [SerializeField]
-    private float VARY_GRAVITY_AMAOUNT_CELESTE;
-    [Space(6)]
-    [SerializeField]
-    private float FALLING_GRAVITY_AMAOUNT_MARIO;
-    [SerializeField]
-    private float FALLING_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
-    [SerializeField]
-    private float FALLING_GRAVITY_AMAOUNT_CELESTE;
-    [Space(6)]
-    [SerializeField]
-    private float MAX_FALL_SPEED_MARIO;
-    [SerializeField]
-    private float MAX_FALL_SPEED_HOLLOW_KNIGHT;
-    [SerializeField]
-    private float MAX_FALL_SPEED_CELESTE;
-
-    [Header("Wall sliding variables")]
-    [Space(8)]
-    [SerializeField]
-    private Transform wallCheck;
-    [SerializeField]
-    private float wallSlidingSpeed;
-
-    [Header("Wall jumping variables")]
-    [Space(8)]
-    [SerializeField]
-    private float WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
-    [SerializeField]
-    private float WALL_JUMPING_DURATION_CELESTE;
-    [Space(6)]
-    [SerializeField]
-    private Vector2 WALL_JUMPING_POWER_HOLLOW_KNIGHT;
-    [SerializeField]
-    private Vector2 WALL_JUMPING_POWER_CELESTE;
-    [Space(6)]
-    [SerializeField]
-    private float WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT;
-    [SerializeField]
-    private float WALL_JUMPING_GRAVITY_SCALE_CELESTE;
-
-    [Space(6)]
-    [SerializeField]
-    private float wallJumpingTime = 0.2f;
-
     //General variables
+    private PlayerData Data;
+
     private Rigidbody2D rb;
     private PhysicsMaterial2D material2D;
 
@@ -154,10 +54,6 @@ public class PlayerController : MonoBehaviour
     //Dash variables
     private bool isDashing = false;
     private bool canDash = true;
-    [SerializeField]
-    private float dashPower = 10f;
-    [SerializeField]
-    private float dashingTime = 0.3f;
     private Vector2 dashDirection = Vector2.zero;
 
     private bool doubleJump;
@@ -176,6 +72,8 @@ public class PlayerController : MonoBehaviour
 
     private void InitializeDependencies()
     {
+        Data = GetComponent<PlayerData>();
+
         rb = GetComponent<Rigidbody2D>();
         material2D = GetComponent<CapsuleCollider2D>().sharedMaterial;
     }
@@ -244,13 +142,13 @@ public class PlayerController : MonoBehaviour
         ApplyWallSlide();
         if (isDashing)
         {
-            rb.velocity = new Vector2(dashPower * dashDirection.x, dashPower * dashDirection.y);
+            rb.velocity = new Vector2(Data.dashPower * dashDirection.x, Data.dashPower * dashDirection.y);
         }
     }
 
     private IEnumerator StopDashing()
     {
-        yield return new WaitForSeconds(dashingTime);
+        yield return new WaitForSeconds(Data.dashingTime);
         isDashing = false;
     }
 
@@ -265,16 +163,16 @@ public class PlayerController : MonoBehaviour
                 else
                     rb.AddForce(dirRaw * moveSpeed / 2 * Vector2.right);
 
-                if (Mathf.Abs(rb.velocity.x) > MARIO_MAXIMUM_VEL)
+                if (Mathf.Abs(rb.velocity.x) > Data.MARIO_MAXIMUM_VEL)
                 {
-                    rb.velocity = new Vector2(MARIO_MAXIMUM_VEL * Mathf.Sign(rb.velocity.x), rb.velocity.y);
+                    rb.velocity = new Vector2(Data.MARIO_MAXIMUM_VEL * Mathf.Sign(rb.velocity.x), rb.velocity.y);
                 }
 
                 lastDirRaw = dirRaw;
             }
             else if (lastDirRaw != 0 && rb.velocity.x != 0)
             {
-                rb.AddForce(-lastDirRaw * MARIO_MAXIMUM_VEL / 5 * Vector2.right);
+                rb.AddForce(-lastDirRaw * Data.MARIO_MAXIMUM_VEL / 5 * Vector2.right);
                 if (Mathf.Sign(rb.velocity.x) != Mathf.Sign(lastDirRaw))
                 {
                     lastDirRaw = 0;
@@ -316,7 +214,7 @@ public class PlayerController : MonoBehaviour
             if (isWalled && !IsGrounded() && dirRaw != 0f)
             {
                 isWallSliding = true;
-                rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
+                rb.velocity = new Vector2(rb.velocity.x, -Data.wallSlidingSpeed);
                 rb.gravityScale = 0;
             }
             else
@@ -375,7 +273,7 @@ public class PlayerController : MonoBehaviour
         {
             isWallJumping = false;
             wallJumpingDirection = -transform.localScale.x;
-            wallJumpingCounter = wallJumpingTime;
+            wallJumpingCounter = Data.wallJumpingTime;
 
             CancelInvoke(nameof(StopWallJumping));
         }
@@ -414,7 +312,7 @@ public class PlayerController : MonoBehaviour
         //Increasing gravity scale so that the player doesn't try to misuse the wall jumping mechanic by doing more a Celeste thing
         if (basicAbilityFeel == BasicAbilityFeel.HOLLOW_KNIGHT && Mathf.Sign(wallJumpingDirection) == dirRaw)
         {
-            rb.gravityScale = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT * 5f;
+            rb.gravityScale = Data.WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT * 5f;
         }
     }
 
@@ -431,12 +329,12 @@ public class PlayerController : MonoBehaviour
 
     private bool IsWalled() 
     {
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, groundLayer);
+        return Physics2D.OverlapCircle(Data.wallCheck.position, 0.2f, Data.groundLayer);
     }
 
     private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        return Physics2D.OverlapCircle(Data.groundCheck.position, 0.2f, Data.groundLayer);
     }
 
     private void UpdateMoveVariables(string currentMoveFeel)
@@ -445,21 +343,21 @@ public class PlayerController : MonoBehaviour
         {
             case "MARIO":
                 material2D.friction = 0.2f;
-                moveSpeed = MOVE_SPEED_MARIO;
+                moveSpeed = Data.MOVE_SPEED_MARIO;
                 break;
             case "HOLLOW_KNIGHT":
                 material2D.friction = 0f;
 
-                moveSpeed = MOVE_SPEED_HOLLOW_KNIGHT;
-                accelRate = ACCEL_RATE_HOLLOW_KNIGHT;
-                deccelRate = DECCEL_RATE_HOLLOW_KNIGHT;
+                moveSpeed = Data.MOVE_SPEED_HOLLOW_KNIGHT;
+                accelRate = Data.ACCEL_RATE_HOLLOW_KNIGHT;
+                deccelRate = Data.DECCEL_RATE_HOLLOW_KNIGHT;
                 break;
             case "CELESTE":
                 material2D.friction = 0f;
 
-                moveSpeed = MOVE_SPEED_CELESTE;
-                accelRate = ACCEL_RATE_CELESTE;
-                deccelRate = DECCEL_RATE_CELESTE;
+                moveSpeed = Data.MOVE_SPEED_CELESTE;
+                accelRate = Data.ACCEL_RATE_CELESTE;
+                deccelRate = Data.DECCEL_RATE_CELESTE;
                 break;
             default:
                 break;
@@ -471,31 +369,31 @@ public class PlayerController : MonoBehaviour
         switch (currentJumpFeel)
         {
             case "MARIO":
-                originalGravityScale = GRAVITY_SCALE_MARIO;
+                originalGravityScale = Data.GRAVITY_SCALE_MARIO;
 
-                jumpPower = JUMP_POWER_MARIO;
+                jumpPower = Data.JUMP_POWER_MARIO;
 
-                varyGravityAmount = VARY_GRAVITY_AMAOUNT_MARIO;
-                fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_MARIO;
-                maxFallSpeed = MAX_FALL_SPEED_MARIO;
+                varyGravityAmount = Data.VARY_GRAVITY_AMAOUNT_MARIO;
+                fallingGravityAmount = Data.FALLING_GRAVITY_AMAOUNT_MARIO;
+                maxFallSpeed = Data.MAX_FALL_SPEED_MARIO;
                 break;
             case "HOLLOW_KNIGHT":
-                originalGravityScale = GRAVITY_SCALE_HOLLOW_KNIGHT;
+                originalGravityScale = Data.GRAVITY_SCALE_HOLLOW_KNIGHT;
 
-                jumpPower = JUMP_POWER_HOLLOW_KNIGHT;
+                jumpPower = Data.JUMP_POWER_HOLLOW_KNIGHT;
 
-                varyGravityAmount = VARY_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
-                fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
-                maxFallSpeed = MAX_FALL_SPEED_HOLLOW_KNIGHT;
+                varyGravityAmount = Data.VARY_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
+                fallingGravityAmount = Data.FALLING_GRAVITY_AMAOUNT_HOLLOW_KNIGHT;
+                maxFallSpeed = Data.MAX_FALL_SPEED_HOLLOW_KNIGHT;
                 break;
             case "CELESTE":
-                originalGravityScale = GRAVITY_SCALE_CELESTE;
+                originalGravityScale = Data.GRAVITY_SCALE_CELESTE;
 
-                jumpPower = JUMP_POWER_CELESTE;
+                jumpPower = Data.JUMP_POWER_CELESTE;
 
-                varyGravityAmount = VARY_GRAVITY_AMAOUNT_CELESTE;
-                fallingGravityAmount = FALLING_GRAVITY_AMAOUNT_CELESTE;
-                maxFallSpeed = MAX_FALL_SPEED_CELESTE;
+                varyGravityAmount = Data.VARY_GRAVITY_AMAOUNT_CELESTE;
+                fallingGravityAmount = Data.FALLING_GRAVITY_AMAOUNT_CELESTE;
+                maxFallSpeed = Data.MAX_FALL_SPEED_CELESTE;
                 break;
             default:
                 break;
@@ -507,16 +405,16 @@ public class PlayerController : MonoBehaviour
         switch (currentWallJumpFeel)
         {
             case "HOLLOW_KNIGHT":
-                wallJumpingDuration = WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
-                wallJumpingPower = WALL_JUMPING_POWER_HOLLOW_KNIGHT;
+                wallJumpingDuration = Data.WALL_JUMPING_DURATION_HOLLOW_KNIGHT;
+                wallJumpingPower = Data.WALL_JUMPING_POWER_HOLLOW_KNIGHT;
 
-                wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT;
+                wallJumpGravity = Data.WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT;
                 break;
             case "CELESTE":
-                wallJumpingDuration = WALL_JUMPING_DURATION_CELESTE;
-                wallJumpingPower = WALL_JUMPING_POWER_CELESTE;
+                wallJumpingDuration = Data.WALL_JUMPING_DURATION_CELESTE;
+                wallJumpingPower = Data.WALL_JUMPING_POWER_CELESTE;
 
-                wallJumpGravity = WALL_JUMPING_GRAVITY_SCALE_CELESTE;
+                wallJumpGravity = Data.WALL_JUMPING_GRAVITY_SCALE_CELESTE;
                 break;
             default:
                 break;
