@@ -139,7 +139,8 @@ public class AbilitySwitchPanelController : MonoBehaviour
             //Update the ability state
             UpdateCurrentAbilities();
 
-            timeController.StopSlowMotion();
+            timeController.shouldStop = true;
+            //timeController.StopSlowMotion();
         }
     }
 

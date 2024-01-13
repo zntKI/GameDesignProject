@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         //Jump
         if (Input.GetButtonDown("Jump"))
         {
-            if (specialAbility == SpecialAbility.DOUBLE_JUMP && (IsGrounded() || doubleJump))
+            if (specialAbility == SpecialAbility.DOUBLE_JUMP && (IsGrounded() || (doubleJump && !IsWalled())))
             {
                 shouldJump = true;
                 doubleJump = !doubleJump;

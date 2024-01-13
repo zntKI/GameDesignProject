@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TimeController : MonoBehaviour
 {
+    public bool shouldStop = false;
+
     [SerializeField]
     private float slowMotionTimeScale;
 
@@ -17,17 +19,45 @@ public class TimeController : MonoBehaviour
         startFixedDeltaTime = Time.fixedDeltaTime;
     }
 
+    void Update()
+    {
+        if (shouldStop)
+        {
+            StopSlowMotion();
+        }
+    }
+
     public void StartSlowMotion()
     {
         Time.timeScale = slowMotionTimeScale;
         Time.fixedDeltaTime = startFixedDeltaTime * slowMotionTimeScale;
     }
 
-    public void StopSlowMotion() 
+    public void StopSlowMotion()
     {
         //TODO: Make it slowly go back to normal speed
 
-        Time.timeScale = startTimeScale;
-        Time.fixedDeltaTime = startFixedDeltaTime;
+        Time.timeScale += slowMotionTimeScale/* * .5f*/;
+        if (Time.timeScale > startTimeScale)
+        {
+            Time.timeScale = startTimeScale;
+        }
+        Time.fixedDeltaTime += startFixedDeltaTime * slowMotionTimeScale/* * .5f*/;
+        if (Time.fixedDeltaTime > startFixedDeltaTime)
+        {
+            Time.fixedDeltaTime = startFixedDeltaTime;
+        }
+        //Time.timeScale = Mathf.Lerp(Time.timeScale, startTimeScale, slowMotionTimeScale);
+        //Time.fixedDeltaTime = Mathf.Lerp(Time.fixedDeltaTime, startFixedDeltaTime, startFixedDeltaTime * slowMotionTimeScale);
+
+        //Debug.Log($"TimeScale: {Time.timeScale}; Fixed: {Time.fixedDeltaTime}");
+
+        if (Time.timeScale == startTimeScale && Time.fixedDeltaTime == startFixedDeltaTime)
+        {
+            shouldStop = false;
+        }
+
+        //Time.timeScale = startTimeScale;
+        //Time.fixedDeltaTime = startFixedDeltaTime;
     }
 }
