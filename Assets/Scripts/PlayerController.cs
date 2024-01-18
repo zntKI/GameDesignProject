@@ -459,6 +459,11 @@ public class PlayerController : MonoBehaviour
                 specialAbility = SpecialAbility.DASH;
                 break;
             case "DOUBLE_JUMP":
+                if (specialAbility == SpecialAbility.DASH)
+                {
+                    doubleJump = true;
+                }
+
                 specialAbility = SpecialAbility.DOUBLE_JUMP;
                 break;
             default:
