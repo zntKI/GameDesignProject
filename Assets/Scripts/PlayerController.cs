@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public bool isAtNextLevel = true;
+
     private enum BasicAbilityFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
     private enum SpecialAbility { DASH, DOUBLE_JUMP };
 
@@ -58,6 +60,10 @@ public class PlayerController : MonoBehaviour
 
     private bool doubleJump;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()

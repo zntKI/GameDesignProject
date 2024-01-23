@@ -8,6 +8,11 @@ public class CameraFollowPlayer : MonoBehaviour
     private Transform playerPos;
     private Vector3 offset = new Vector3(0, 2, -10);
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     // Update is called once per frame
     void LateUpdate()
     {
