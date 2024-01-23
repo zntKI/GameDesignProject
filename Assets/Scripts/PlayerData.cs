@@ -8,6 +8,8 @@ public class PlayerData : MonoBehaviour
     [Header("Movement variables")]
     [Space(8)]
     [SerializeField]
+    public float MOVE_SPEED_BASIC = 5f;
+    [SerializeField]
     public float MOVE_SPEED_MARIO = 10f;
     [SerializeField]
     public float MARIO_MAXIMUM_VEL = 10f;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,11 @@ public class AbilitySwitchPanelController : MonoBehaviour
 
     private int currentAbilitySelectedIndex = 0;
     private int abilityCount;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +50,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
                 if (imageOption.name == "Title")
                     continue;
 
-                if (imageOption.name == "MARIO")
+                if (imageOption.name == "BASIC")
                     imageOption.SetActive(true);
                 else
                     imageOption.SetActive(false);
@@ -100,20 +106,30 @@ public class AbilitySwitchPanelController : MonoBehaviour
             //Setting the current option false and the next/previous to true
             if (presentAbility.activeSelf)
             {
-                presentAbility.gameObject.SetActive(false);
+                //presentAbility.gameObject.SetActive(false);
 
                 int updateI = CalculateUpdateI(ability.childCount, i, isRight);
                 GameObject abilityToUpdate = ability.GetChild(updateI).gameObject;
 
                 if (abilityToUpdate.name != "Title")
                 {
-                    abilityToUpdate.SetActive(true);
+                    if ((ability.name == "BasicAbilityFeelContainer" && player.moveFeels.Contains(abilityToUpdate.name))
+                        || (ability.name == "SpecialAbilityContainer" && player.specialAbilities.Contains(abilityToUpdate.name)))
+                    {
+                        abilityToUpdate.SetActive(true);
+                        presentAbility.gameObject.SetActive(false);
+                    }
                 }
                 else
                 {
                     //Get the next/previous element, ignoring the Title one
                     updateI = CalculateUpdateI(ability.childCount, updateI, isRight);
-                    ability.GetChild(updateI).gameObject.SetActive(true);
+                    if ((ability.name == "BasicAbilityFeelContainer" && player.moveFeels.Contains(abilityToUpdate.name))
+                        || (ability.name == "SpecialAbilityContainer" && player.specialAbilities.Contains(abilityToUpdate.name)))
+                    {
+                        ability.GetChild(updateI).gameObject.SetActive(true);
+                        presentAbility.gameObject.SetActive(false);
+                    }
                 }
 
                 break;

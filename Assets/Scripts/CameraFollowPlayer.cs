@@ -6,7 +6,7 @@ public class CameraFollowPlayer : MonoBehaviour
 {
     [SerializeField]
     private Transform playerPos;
-    private Vector3 offset = new Vector3(0, 2, -10);
+    private Vector3 offset = new Vector3(5, 2, -10);
 
     private void Awake()
     {
@@ -17,5 +17,13 @@ public class CameraFollowPlayer : MonoBehaviour
     void LateUpdate()
     {
         this.transform.position = playerPos.position + offset;
+    }
+
+    public void ChangeOffset(int sceneId)
+    {
+        if (sceneId == 1)
+        {
+            offset = new Vector3(5, 2, -10);
+        }
     }
 }

@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public List<string> moveFeels = new List<string>() { "BASIC" };
+    public List<string> specialAbilities = new List<string>();
+
     public bool isAtNextLevel = true;
 
-    private enum BasicAbilityFeel { MARIO, HOLLOW_KNIGHT, CELESTE };
-    private enum SpecialAbility { DASH, DOUBLE_JUMP };
+    private enum BasicAbilityFeel { BASIC, MARIO, HOLLOW_KNIGHT, CELESTE };
+    private enum SpecialAbility { NONE, JUMP, DASH, DOUBLE_JUMP, WALL_JUMP };
 
 
     private BasicAbilityFeel basicAbilityFeel;
@@ -70,10 +73,10 @@ public class PlayerController : MonoBehaviour
     {
         InitializeDependencies();
 
-        UpdateMoveVariables("MARIO");
+        UpdateMoveVariables("BASIC");
         UpdateJumpVariables("MARIO");
-        UpdateWallJumpVariables("MARIO");
-        UpdateSpecialAbility("DOUBLE_JUMP");
+        //UpdateWallJumpVariables("MARIO");
+        //UpdateSpecialAbility("DOUBLE_JUMP");
     }
 
     private void InitializeDependencies()
@@ -95,7 +98,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Jump
-        if (Input.GetButtonDown("Jump"))
+        if (specialAbility == SpecialAbility.JUMP && Input.GetButtonDown("Jump"))
         {
             if (specialAbility == SpecialAbility.DOUBLE_JUMP && (IsGrounded() || (doubleJump && !IsWalled())))
             {
@@ -160,7 +163,11 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyHorizontalMovement()
     {
-        if (basicAbilityFeel == BasicAbilityFeel.MARIO)
+        if (basicAbilityFeel == BasicAbilityFeel.BASIC)
+        {
+            rb.velocity = new Vector2(moveSpeed * dirRaw, rb.velocity.y);
+        }
+        else if (basicAbilityFeel == BasicAbilityFeel.MARIO)
         {
             if (dirRaw != 0)
             {
@@ -226,7 +233,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 isWallSliding = false;
-                if ( (isWalled && dirRaw == 0) || (!isWalled && dirRaw != 0) )
+                if ((isWalled && dirRaw == 0) || (!isWalled && dirRaw != 0))
                 {
                     rb.gravityScale = originalGravityScale;
                 }
@@ -268,7 +275,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ApplyWallJump() 
+    private void ApplyWallJump()
     {
         if (basicAbilityFeel == BasicAbilityFeel.MARIO)
         {
@@ -311,7 +318,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void StopWallJumping() 
+    private void StopWallJumping()
     {
         isWallJumping = false;
 
@@ -333,7 +340,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool IsWalled() 
+    private bool IsWalled()
     {
         return Physics2D.OverlapCircle(Data.wallCheck.position, 0.2f, Data.groundLayer);
     }
@@ -343,10 +350,19 @@ public class PlayerController : MonoBehaviour
         return Physics2D.OverlapCircle(Data.groundCheck.position, 0.2f, Data.groundLayer);
     }
 
+    public void Bounce()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, 20f);
+    }
+
     private void UpdateMoveVariables(string currentMoveFeel)
     {
         switch (currentMoveFeel)
         {
+            case "BASIC":
+                material2D.friction = 0f;
+                moveSpeed = Data.MOVE_SPEED_BASIC;
+                break;
             case "MARIO":
                 material2D.friction = 0.2f;
                 moveSpeed = Data.MOVE_SPEED_MARIO;
@@ -431,6 +447,12 @@ public class PlayerController : MonoBehaviour
     {
         switch (currentBasicAbilityFeel)
         {
+            case "BASIC":
+                basicAbilityFeel = BasicAbilityFeel.BASIC;
+
+                UpdateMoveVariables("BASIC");
+                UpdateJumpVariables("MARIO");
+                break;
             case "MARIO":
                 basicAbilityFeel = BasicAbilityFeel.MARIO;
 
@@ -461,6 +483,9 @@ public class PlayerController : MonoBehaviour
     {
         switch (currentSpecialAbility)
         {
+            case "JUMP":
+                specialAbility = SpecialAbility.JUMP;
+                break;
             case "DASH":
                 specialAbility = SpecialAbility.DASH;
                 break;
