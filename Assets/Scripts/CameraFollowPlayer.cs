@@ -17,13 +17,18 @@ public class CameraFollowPlayer : MonoBehaviour
     void LateUpdate()
     {
         this.transform.position = playerPos.position + offset;
+        //this.transform.Translate(playerPos.position.x + offset.x, 0f, playerPos.position.x + offset.z);
     }
 
     public void ChangeOffset(int sceneId)
     {
         if (sceneId == 1)
         {
-            offset = new Vector3(5, 2, -10);
+            offset = new Vector3(0, 2, -10);
+        }
+        else if (sceneId == 2)
+        {
+            offset = new Vector3(5, 0, -10);
         }
     }
 }

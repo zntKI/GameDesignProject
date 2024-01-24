@@ -34,7 +34,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
         SetAbilities();
     }
 
-    private void SetAbilities()
+    private void SetAbilities(string basicAbility = "", string specialAbility = "")
     {
         Transform outerContainer = abilitySwitchPanel.transform;
 
@@ -50,10 +50,20 @@ public class AbilitySwitchPanelController : MonoBehaviour
                 if (imageOption.name == "Title")
                     continue;
 
-                if (imageOption.name == "BASIC")
-                    imageOption.SetActive(true);
-                else
-                    imageOption.SetActive(false);
+                if (innerContainer.name == "BasicAbilityFeelContainer")
+                {
+                    if (basicAbility != "" && imageOption.name == basicAbility || (imageOption.name == "BASIC"))
+                        imageOption.SetActive(true);
+                    else
+                        imageOption.SetActive(false);
+                }
+                else if (innerContainer.name == "SpecialAbilityContainer")
+                {
+                    if (specialAbility != "" && imageOption.name == specialAbility)
+                        imageOption.SetActive(true);
+                    else
+                        imageOption.SetActive(false);
+                }
             }
         }
     }
@@ -79,6 +89,14 @@ public class AbilitySwitchPanelController : MonoBehaviour
 
     private void UpdatePanel()
     {
+        if (panelRectTransform == null)
+        {
+            GameObject image = GameObject.Find("AbilitySwitchPanel");
+            abilitySwitchPanel = image.GetComponent<Image>();
+            panelRectTransform = abilitySwitchPanel.GetComponent<RectTransform>();
+
+            SetAbilities(player.basicAbilityFeel.ToString(), player.specialAbility.ToString());
+        }
         if (!isShown)
         {
             panelRectTransform.anchoredPosition = new Vector2(panelRectTransform.anchoredPosition.x + panelRectTransform.rect.width, panelRectTransform.anchoredPosition.y);
@@ -173,7 +191,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
 
                 if (!imageOption.activeSelf || imageOption.name == "Title")
                     continue;
-                
+
                 if (innerContainerObject.name.Contains("BasicAbilityFeel"))
                 {
                     player.UpdateBasicAbilityFeel(imageOption.name);

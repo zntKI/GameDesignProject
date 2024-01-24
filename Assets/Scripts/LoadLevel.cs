@@ -28,6 +28,11 @@ public class LoadLevel : MonoBehaviour
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
                 player.isAtNextLevel = true;
+
+                if (SceneManager.GetActiveScene().buildIndex + 1 == 2 && !player.moveFeels.Contains("MARIO"))
+                {
+                    player.moveFeels.Add("MARIO");
+                }
             }
             else
             {

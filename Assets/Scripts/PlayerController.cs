@@ -10,12 +10,12 @@ public class PlayerController : MonoBehaviour
 
     public bool isAtNextLevel = true;
 
-    private enum BasicAbilityFeel { BASIC, MARIO, HOLLOW_KNIGHT, CELESTE };
-    private enum SpecialAbility { NONE, JUMP, DASH, DOUBLE_JUMP, WALL_JUMP };
+    public enum BasicAbilityFeel { BASIC, MARIO, HOLLOW_KNIGHT, CELESTE };
+    public enum SpecialAbility { NONE, JUMP, DASH, DOUBLE_JUMP, WALL_JUMP };
 
 
-    private BasicAbilityFeel basicAbilityFeel;
-    private SpecialAbility specialAbility;
+    public BasicAbilityFeel basicAbilityFeel;
+    public SpecialAbility specialAbility;
 
     //General variables
     private PlayerData Data;
@@ -247,10 +247,12 @@ public class PlayerController : MonoBehaviour
         {
             //rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
             rb.gravityScale *= varyGravityAmount;
+            //Debug.Log("IN1");
 
             shouldVaryJumpHeight = false;
         }
 
+        //Debug.Log(rb.velocity.y);
         if (rb.velocity.y < 0f)
         {
             if (rb.velocity.y >= -maxFallSpeed)
@@ -262,7 +264,7 @@ public class PlayerController : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, -maxFallSpeed);
             }
         }
-        else if (rb.velocity.y == 0f)
+        else if (rb.velocity.y <= .1f)
         {
             rb.gravityScale = originalGravityScale;
         }
@@ -277,7 +279,7 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyWallJump()
     {
-        if (basicAbilityFeel == BasicAbilityFeel.MARIO)
+        if (basicAbilityFeel == BasicAbilityFeel.MARIO || basicAbilityFeel == BasicAbilityFeel.BASIC)
         {
             return;
         }
