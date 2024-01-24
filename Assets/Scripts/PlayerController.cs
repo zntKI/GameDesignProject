@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -98,7 +99,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Jump
-        if (specialAbility == SpecialAbility.JUMP && Input.GetButtonDown("Jump"))
+        if ((specialAbility == SpecialAbility.JUMP || specialAbility == SpecialAbility.DOUBLE_JUMP) && Input.GetButtonDown("Jump"))
         {
             if (specialAbility == SpecialAbility.DOUBLE_JUMP && (IsGrounded() || (doubleJump && !IsWalled())))
             {
@@ -132,6 +133,17 @@ public class PlayerController : MonoBehaviour
                 dashDirection = new Vector2(transform.localScale.x, 0).normalized;
             }
             StartCoroutine(StopDashing());
+        }
+
+        CheckIfDead();
+    }
+
+    private void CheckIfDead()
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 2 && this.transform.position.y < 0)
+        {
+            var start = GameObject.Find("Start");
+            this.transform.position = new Vector3(start.transform.position.x + 2f, start.transform.position.y, this.transform.position.z);
         }
     }
 
@@ -357,6 +369,15 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, 20f);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == 7)
+        {
+            var start = GameObject.Find("Start");
+            this.transform.position = new Vector3(start.transform.position.x + 2f, start.transform.position.y, this.transform.position.z);
+        }
+    }
+
     private void UpdateMoveVariables(string currentMoveFeel)
     {
         switch (currentMoveFeel)
@@ -492,10 +513,10 @@ public class PlayerController : MonoBehaviour
                 specialAbility = SpecialAbility.DASH;
                 break;
             case "DOUBLE_JUMP":
-                if (specialAbility == SpecialAbility.DASH)
-                {
+                //if (specialAbility == SpecialAbility.DASH)
+                //{
                     doubleJump = true;
-                }
+                //}
 
                 specialAbility = SpecialAbility.DOUBLE_JUMP;
                 break;

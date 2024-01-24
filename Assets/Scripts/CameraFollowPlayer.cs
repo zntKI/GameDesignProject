@@ -28,6 +28,7 @@ public class CameraFollowPlayer : MonoBehaviour
         }
         else if (sceneId == 2)
         {
+            this.gameObject.GetComponent<Camera>().orthographicSize *= 1.3f;
             offset = new Vector3(5, 0, -10);
         }
     }
