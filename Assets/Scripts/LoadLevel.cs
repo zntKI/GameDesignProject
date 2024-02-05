@@ -33,9 +33,19 @@ public class LoadLevel : MonoBehaviour
                 {
                     player.moveFeels.Add("MARIO");
                 }
-                else if (SceneManager.GetActiveScene().buildIndex + 1 == 3 && !player.moveFeels.Contains("HOLLOW_KNIGHT"))
+                else if (SceneManager.GetActiveScene().buildIndex + 1 == 3)
                 {
-                    player.moveFeels.Add("HOLLOW_KNIGHT");
+                    if (!player.moveFeels.Contains("HOLLOW_KNIGHT"))
+                        player.moveFeels.Add("HOLLOW_KNIGHT");
+
+                    player.UpdateBasicAbilityFeel("HOLLOW_KNIGHT");
+
+                    player.moveFeels.Remove("MARIO");
+                    player.moveFeels.Remove("BASIC");
+                }
+                else if (SceneManager.GetActiveScene().buildIndex + 1 == 4 && !player.moveFeels.Contains("CELESTE"))
+                {
+                    player.moveFeels.Add("CELESTE");
                 }
 
                 FindObjectOfType<CameraFollowPlayer>().ChangeOffset(SceneManager.GetActiveScene().buildIndex + 1);
@@ -44,6 +54,11 @@ public class LoadLevel : MonoBehaviour
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
                 player.isAtNextLevel = false;
+
+                if (SceneManager.GetActiveScene().buildIndex - 1 == 2 && !player.moveFeels.Contains("MARIO"))
+                {
+                    player.moveFeels.Add("MARIO");
+                }
             }
         }
 

@@ -103,6 +103,10 @@ public class PlayerController : MonoBehaviour
         {
             if (specialAbility == SpecialAbility.DOUBLE_JUMP && (IsGrounded() || (doubleJump && !IsWalled())))
             {
+                if (doubleJump)
+                {
+                    rb.gravityScale = originalGravityScale;
+                }
                 shouldJump = true;
                 doubleJump = !doubleJump;
             }
@@ -126,6 +130,8 @@ public class PlayerController : MonoBehaviour
         if (specialAbility == SpecialAbility.DASH && Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
             isDashing = true;
+            rb.gravityScale = 0;
+
             canDash = false;
             dashDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
             if (dashDirection == Vector2.zero)
@@ -155,7 +161,7 @@ public class PlayerController : MonoBehaviour
             canDash = true;
         }
 
-        if (!isWallJumping)
+        if (!isWallJumping && !isDashing)
         {
             ApplyHorizontalMovement();
             ApplyJump();
@@ -163,6 +169,7 @@ public class PlayerController : MonoBehaviour
         ApplyWallSlide();
         if (isDashing)
         {
+            //transform.Translate(Data.dashPower * dashDirection.x, Data.dashPower * dashDirection.y, 0f);
             rb.velocity = new Vector2(Data.dashPower * dashDirection.x, Data.dashPower * dashDirection.y);
         }
     }
@@ -170,6 +177,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator StopDashing()
     {
         yield return new WaitForSeconds(Data.dashingTime);
+        rb.gravityScale = originalGravityScale;
         isDashing = false;
     }
 
@@ -245,8 +253,9 @@ public class PlayerController : MonoBehaviour
             else
             {
                 isWallSliding = false;
-                if ((isWalled && dirRaw == 0) || (!isWalled && dirRaw != 0))
+                if ((isWalled && dirRaw == 0) /*|| (!isWalled && dirRaw != 0)*/)
                 {
+                    //Debug.Log("IN");
                     rb.gravityScale = originalGravityScale;
                 }
             }
@@ -259,17 +268,17 @@ public class PlayerController : MonoBehaviour
         {
             //rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
             rb.gravityScale *= varyGravityAmount;
-            //Debug.Log("IN1");
 
             shouldVaryJumpHeight = false;
         }
 
         //Debug.Log(rb.velocity.y);
-        if (rb.velocity.y < 0f)
+        if (rb.velocity.y < 0f && !IsGrounded())
         {
             if (rb.velocity.y >= -maxFallSpeed)
             {
                 rb.gravityScale *= fallingGravityAmount;
+                //Debug.Log("IN2");
             }
             else
             {
@@ -364,9 +373,12 @@ public class PlayerController : MonoBehaviour
         return Physics2D.OverlapCircle(Data.groundCheck.position, 0.2f, Data.groundLayer);
     }
 
-    public void Bounce()
+    public void Bounce(float amount)
     {
-        rb.velocity = new Vector2(rb.velocity.x, 20f);
+        rb.velocity = new Vector2(rb.velocity.x, amount);
+        rb.gravityScale = originalGravityScale;
+
+        doubleJump = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -376,6 +388,11 @@ public class PlayerController : MonoBehaviour
             var start = GameObject.Find("Start");
             this.transform.position = new Vector3(start.transform.position.x + 2f, start.transform.position.y, this.transform.position.z);
         }
+    }
+
+    public void ResetGravityScale()
+    {
+        rb.gravityScale = originalGravityScale;
     }
 
     private void UpdateMoveVariables(string currentMoveFeel)

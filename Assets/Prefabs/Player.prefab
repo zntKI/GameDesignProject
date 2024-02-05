@@ -139,6 +139,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cca0556faad42c49b7ab01c91e4fe2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveFeels:
+  - BASIC
+  specialAbilities: []
+  isAtNextLevel: 1
+  basicAbilityFeel: 0
+  specialAbility: 0
 --- !u!114 &932065361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,6 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9d725b2e4ea1b748869b8f5375bf733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MOVE_SPEED_BASIC: 5
   MOVE_SPEED_MARIO: 30
   MARIO_MAXIMUM_VEL: 7
   MOVE_SPEED_HOLLOW_KNIGHT: 10
@@ -187,8 +194,8 @@ MonoBehaviour:
   WALL_JUMPING_GRAVITY_SCALE_HOLLOW_KNIGHT: 3
   WALL_JUMPING_GRAVITY_SCALE_CELESTE: 4
   wallJumpingTime: 0.2
-  dashPower: 17
-  dashingTime: 0.1
+  dashPower: 12
+  dashingTime: 0.3
 --- !u!1 &2087918581003950655
 GameObject:
   m_ObjectHideFlags: 0

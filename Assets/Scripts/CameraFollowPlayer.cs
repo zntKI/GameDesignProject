@@ -16,6 +16,10 @@ public class CameraFollowPlayer : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (playerPos == null)
+        {
+            playerPos = GameObject.Find("Player").transform;
+        }
         this.transform.position = playerPos.position + offset;
         //this.transform.Translate(playerPos.position.x + offset.x, 0f, playerPos.position.x + offset.z);
     }

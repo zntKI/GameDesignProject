@@ -71,15 +71,21 @@ public class AbilitySwitchPanelController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             UpdatePanel();
-        }
-        else if (isShown && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)))
-        {
+
             //Go through the options in the currently selected ability
-            Transform ability = abilitySwitchPanel.transform.GetChild(currentAbilitySelectedIndex);
+            Transform ability = abilitySwitchPanel.transform.GetChild(1);
             UpdateAbilityAppear(ability, Input.GetKeyDown(KeyCode.RightArrow));
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            UpdatePanel();
+
+            //Go through the options in the currently selected ability
+            Transform ability = abilitySwitchPanel.transform.GetChild(0);
+            UpdateAbilityAppear(ability, Input.GetKeyDown(KeyCode.UpArrow));
         }
         else if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -104,15 +110,6 @@ public class AbilitySwitchPanelController : MonoBehaviour
 
             timeController.StartSlowMotion();
         }
-        else
-        {
-            //Change the index of the current ability selected
-            currentAbilitySelectedIndex++;
-            if (currentAbilitySelectedIndex == abilityCount)
-            {
-                currentAbilitySelectedIndex = 0;
-            }
-        }
     }
 
     private void UpdateAbilityAppear(Transform ability, bool isRight)
@@ -129,19 +126,17 @@ public class AbilitySwitchPanelController : MonoBehaviour
                 int updateI = CalculateUpdateI(ability.childCount, i, isRight);
                 GameObject abilityToUpdate = ability.GetChild(updateI).gameObject;
 
-                if (abilityToUpdate.name != "Title")
+                if (abilityToUpdate.name != "Title" && ((ability.name == "BasicAbilityFeelContainer" && player.moveFeels.Contains(abilityToUpdate.name))
+                    || (ability.name == "SpecialAbilityContainer" && player.specialAbilities.Contains(abilityToUpdate.name))))
                 {
-                    if ((ability.name == "BasicAbilityFeelContainer" && player.moveFeels.Contains(abilityToUpdate.name))
-                        || (ability.name == "SpecialAbilityContainer" && player.specialAbilities.Contains(abilityToUpdate.name)))
-                    {
-                        abilityToUpdate.SetActive(true);
-                        presentAbility.gameObject.SetActive(false);
-                    }
+                    abilityToUpdate.SetActive(true);
+                    presentAbility.gameObject.SetActive(false);
                 }
                 else
                 {
                     //Get the next/previous element, ignoring the Title one
                     updateI = CalculateUpdateI(ability.childCount, updateI, isRight);
+                    abilityToUpdate = ability.GetChild(updateI).gameObject;
                     if ((ability.name == "BasicAbilityFeelContainer" && player.moveFeels.Contains(abilityToUpdate.name))
                         || (ability.name == "SpecialAbilityContainer" && player.specialAbilities.Contains(abilityToUpdate.name)))
                     {
@@ -174,7 +169,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
             UpdateCurrentAbilities();
 
             timeController.shouldStop = true;
-            //timeController.StopSlowMotion();
+            player.ResetGravityScale();
         }
     }
 

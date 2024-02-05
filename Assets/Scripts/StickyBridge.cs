@@ -18,6 +18,7 @@ public class StickyBridge : MonoBehaviour
         if (collision.gameObject.name == "Player")
         {
             collision.gameObject.transform.SetParent(transform);
+            collision.gameObject.GetComponent<Rigidbody2D>().interpolation = RigidbodyInterpolation2D.None;
         }
     }
 
@@ -26,6 +27,9 @@ public class StickyBridge : MonoBehaviour
         if (collision.gameObject.name == "Player")
         {
             collision.gameObject.transform.SetParent(null);
+            DontDestroyOnLoad(collision.gameObject);
+
+            collision.gameObject.GetComponent<Rigidbody2D>().interpolation = RigidbodyInterpolation2D.Interpolate;
         }
     }
 }
