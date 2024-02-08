@@ -37,12 +37,12 @@ public class TimeController : MonoBehaviour
     {
         //TODO: Make it slowly go back to normal speed
 
-        Time.timeScale += slowMotionTimeScale/* * .5f*/;
+        Time.timeScale += slowMotionTimeScale/* * .3f*/;
         if (Time.timeScale > startTimeScale)
         {
             Time.timeScale = startTimeScale;
         }
-        Time.fixedDeltaTime += startFixedDeltaTime * slowMotionTimeScale/* * .5f*/;
+        Time.fixedDeltaTime += startFixedDeltaTime * slowMotionTimeScale/* * .3f*/;
         if (Time.fixedDeltaTime > startFixedDeltaTime)
         {
             Time.fixedDeltaTime = startFixedDeltaTime;

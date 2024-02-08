@@ -26,6 +26,11 @@ public class PlayerController : MonoBehaviour
 
     private bool isFacingRight = true;
 
+    private int coinsNum;
+    private int geoNum;
+    public List<string> tempStrawberries = new List<string>();
+    public List<string> strawberries = new List<string>();
+
     //Movement variables
     private float dirRaw;
     private float lastDirRaw;
@@ -58,7 +63,7 @@ public class PlayerController : MonoBehaviour
     private float wallJumpGravity;
 
     //Dash variables
-    private bool isDashing = false;
+    public bool isDashing = false;
     private bool canDash = true;
     private Vector2 dashDirection = Vector2.zero;
 
@@ -96,6 +101,16 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded() && !Input.GetButton("Jump"))
         {
             doubleJump = false;
+
+            if (tempStrawberries.Count != 0)
+            {
+                //Debug.Log("IN1");
+                for (int i = 0; i < tempStrawberries.Count; i++)
+                {
+                    strawberries.Add(tempStrawberries[0]);
+                    tempStrawberries.RemoveAt(i);
+                }
+            }
         }
 
         //Jump
@@ -108,6 +123,7 @@ public class PlayerController : MonoBehaviour
                     rb.gravityScale = originalGravityScale;
                 }
                 shouldJump = true;
+                //Debug.Log("IN2");
                 doubleJump = !doubleJump;
             }
             else if (specialAbility != SpecialAbility.DOUBLE_JUMP && IsGrounded())
@@ -146,10 +162,14 @@ public class PlayerController : MonoBehaviour
 
     private void CheckIfDead()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 2 && this.transform.position.y < 0)
+        int index = SceneManager.GetActiveScene().buildIndex;
+
+        if ((index == 1 || index == 2) && this.transform.position.y < 0)
         {
             var start = GameObject.Find("Start");
             this.transform.position = new Vector3(start.transform.position.x + 2f, start.transform.position.y, this.transform.position.z);
+
+            FindObjectOfType<AbilitySwitchPanelController>().HidePanel();
         }
     }
 
@@ -166,7 +186,7 @@ public class PlayerController : MonoBehaviour
             ApplyHorizontalMovement();
             ApplyJump();
         }
-        ApplyWallSlide();
+        //ApplyWallSlide();
         if (isDashing)
         {
             //transform.Translate(Data.dashPower * dashDirection.x, Data.dashPower * dashDirection.y, 0f);
@@ -318,7 +338,7 @@ public class PlayerController : MonoBehaviour
             wallJumpingCounter -= Time.deltaTime;
         }
 
-        if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+        if (specialAbility == SpecialAbility.WALL_JUMP && Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
         {
             isWallJumping = true;
             rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
@@ -373,20 +393,33 @@ public class PlayerController : MonoBehaviour
         return Physics2D.OverlapCircle(Data.groundCheck.position, 0.2f, Data.groundLayer);
     }
 
-    public void Bounce(float amount)
+    public void Bounce(float amount, Vector2 dir)
     {
-        rb.velocity = new Vector2(rb.velocity.x, amount);
+        rb.velocity = dir * amount;
         rb.gravityScale = originalGravityScale;
 
         doubleJump = true;
+        canDash = true;
+        //Debug.Log("IN3");
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void IncreaseScore(string collectable)
     {
-        if (collision.gameObject.layer == 7)
+        if (collectable.Contains("Coin"))
         {
-            var start = GameObject.Find("Start");
-            this.transform.position = new Vector3(start.transform.position.x + 2f, start.transform.position.y, this.transform.position.z);
+            coinsNum++;
+        }
+        else if (collectable.Contains("Geo"))
+        {
+            geoNum++;
+        }
+        else if (collectable.Contains("Strawberry"))
+        {
+            tempStrawberries.Add(collectable);
+        }
+        else
+        {
+            Debug.Log("Incorrect collectable name!!!");
         }
     }
 
@@ -532,10 +565,13 @@ public class PlayerController : MonoBehaviour
             case "DOUBLE_JUMP":
                 //if (specialAbility == SpecialAbility.DASH)
                 //{
-                    doubleJump = true;
+                doubleJump = true;
                 //}
 
                 specialAbility = SpecialAbility.DOUBLE_JUMP;
+                break;
+            case "WALL_JUMP":
+                specialAbility = SpecialAbility.WALL_JUMP;
                 break;
             default:
                 Debug.Log("Wrong image name in the game hierarchy!!!");

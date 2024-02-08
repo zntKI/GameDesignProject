@@ -11,7 +11,7 @@ public class TrampolineController : MonoBehaviour
     {
         if (collision.gameObject.name == "Player")
         {
-            FindObjectOfType<PlayerController>().Bounce(bounceAmount);
+            FindObjectOfType<PlayerController>().Bounce(bounceAmount, Vector2.up);
         }
     }
 }

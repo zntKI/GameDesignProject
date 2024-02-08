@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1913955842443056112}
   - component: {fileID: 1913955842443056113}
   - component: {fileID: 932065361}
+  - component: {fileID: 5635621979067617060}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -196,6 +197,21 @@ MonoBehaviour:
   wallJumpingTime: 0.2
   dashPower: 12
   dashingTime: 0.3
+--- !u!114 &5635621979067617060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913955842443056118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48ace360c87b4f94cba0a41af32a59c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coin: {fileID: 8772251085347317435, guid: 68b56e1450a65734d9becdcb4fe4e464, type: 3}
+  geo: {fileID: 8772251085347317435, guid: 63c4af4261734ec409650fcb4d3a5380, type: 3}
+  strawberry: {fileID: 8772251085347317435, guid: 9551041e4e50f524a8bab14a51902982, type: 3}
 --- !u!1 &2087918581003950655
 GameObject:
   m_ObjectHideFlags: 0

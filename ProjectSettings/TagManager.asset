@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Spikes
+  - Revealable
+  - Collectable
   layers:
   - Default
   - TransparentFX
@@ -12,7 +15,7 @@ TagManager:
   - Water
   - UI
   - Ground
-  - Spikes
+  - 
   - 
   - 
   - 
@@ -38,6 +41,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Bg
+    uniqueID: 356307281
+    locked: 0
+  - name: BgObj
+    uniqueID: 1032237455
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

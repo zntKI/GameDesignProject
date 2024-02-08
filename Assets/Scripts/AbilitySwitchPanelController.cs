@@ -17,8 +17,10 @@ public class AbilitySwitchPanelController : MonoBehaviour
 
     private bool isShown = false;
 
-    private int currentAbilitySelectedIndex = 0;
     private int abilityCount;
+
+    private float time = 1f;
+    private float timeCounter;
 
     private void Awake()
     {
@@ -71,6 +73,15 @@ public class AbilitySwitchPanelController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isShown)
+        {
+            timeCounter += Time.unscaledDeltaTime;
+            if (timeCounter > time)
+            {
+                HidePanel();
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             UpdatePanel();
@@ -108,8 +119,11 @@ public class AbilitySwitchPanelController : MonoBehaviour
             panelRectTransform.anchoredPosition = new Vector2(panelRectTransform.anchoredPosition.x + panelRectTransform.rect.width, panelRectTransform.anchoredPosition.y);
             isShown = true;
 
+            timeController.shouldStop = false;
             timeController.StartSlowMotion();
         }
+
+        timeCounter = 0;
     }
 
     private void UpdateAbilityAppear(Transform ability, bool isRight)
@@ -158,7 +172,7 @@ public class AbilitySwitchPanelController : MonoBehaviour
             return currentI - 1 == -1 ? childCount - 1 : currentI - 1;
     }
 
-    private void HidePanel()
+    public void HidePanel()
     {
         if (isShown)
         {
