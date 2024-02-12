@@ -38,12 +38,25 @@ public class LoadLevel : MonoBehaviour
     {
         if (collision.gameObject.name == "Player" && this.gameObject.name.Contains("Finish"))
         {
+            if (SceneManager.GetActiveScene().buildIndex == 6)
+            {
+                SceneManager.LoadScene(7);
+
+                Destroy(GameObject.Find("AbilitySwitcher"));
+                Destroy(GameObject.Find("Main Camera"));
+                //Destroy(GameObject.Find("Player"));
+
+                return;
+            }
+
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             player.isAtNextLevel = true;
 
             if (SceneManager.GetActiveScene().buildIndex + 1 == 2 && !player.moveFeels.Contains("MARIO"))
             {
                 player.moveFeels.Add("MARIO");
+
+                player.SwitchSprite("MARIO");
             }
             else if (SceneManager.GetActiveScene().buildIndex + 1 == 3)
             {
@@ -54,10 +67,18 @@ public class LoadLevel : MonoBehaviour
 
                 player.moveFeels.Remove("MARIO");
                 player.moveFeels.Remove("BASIC");
+
+                player.SwitchSprite("HOLLOW_KNIGHT");
             }
             else if (SceneManager.GetActiveScene().buildIndex + 1 == 4 && !player.moveFeels.Contains("CELESTE"))
             {
                 player.moveFeels.Add("CELESTE");
+
+                player.SwitchSprite("CELESTE");
+            }
+            else if (SceneManager.GetActiveScene().buildIndex + 1 == 6)
+            {
+                player.SwitchSprite("MIXED");
             }
 
             FindObjectOfType<CameraFollowPlayer>().ChangeOffset(SceneManager.GetActiveScene().buildIndex + 1);

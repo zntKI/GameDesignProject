@@ -36,7 +36,7 @@ public class AcquireAbility : MonoBehaviour
             {
                 var obj = Instantiate(new GameObject().AddComponent<TextMeshPro>());
                 obj.text =
-                    "You acquired the 'Wall jump' special ability!\n" +
+                    "You acquired the 'Double jump' special ability!\n" +
                     "You can toggle through the special abilities\n" +
                     "by pressing the 'left' or 'right' arrow keys.\n" +
                     "Play around to see what happens when you do that!";

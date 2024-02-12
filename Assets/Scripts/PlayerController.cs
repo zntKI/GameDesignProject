@@ -6,6 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    private Sprite basic;
+    [SerializeField]
+    private Sprite mario;
+    [SerializeField]
+    private Sprite hollow_knight;
+    [SerializeField]
+    private Sprite celeste;
+    [SerializeField]
+    private Sprite mixed;
+
+
     public List<string> moveFeels = new List<string>() { "BASIC" };
     public List<string> specialAbilities = new List<string>();
 
@@ -26,8 +38,8 @@ public class PlayerController : MonoBehaviour
 
     private bool isFacingRight = true;
 
-    private int coinsNum;
-    private int geoNum;
+    public int coinsNum;
+    public int geoNum;
     public List<string> tempStrawberries = new List<string>();
     public List<string> strawberries = new List<string>();
 
@@ -191,6 +203,27 @@ public class PlayerController : MonoBehaviour
         {
             //transform.Translate(Data.dashPower * dashDirection.x, Data.dashPower * dashDirection.y, 0f);
             rb.velocity = new Vector2(Data.dashPower * dashDirection.x, Data.dashPower * dashDirection.y);
+        }
+    }
+
+    public void SwitchSprite(string mode)
+    {
+        var spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+        if (mode == "MARIO")
+        {
+            spriteRenderer.sprite = mario;
+        }
+        else if (mode == "HOLLOW_KNIGHT")
+        {
+            spriteRenderer.sprite = hollow_knight;
+        }
+        else if (mode == "CELESTE")
+        {
+            spriteRenderer.sprite = celeste;
+        }
+        else if (mode == "MIXED")
+        {
+            spriteRenderer.sprite = mixed;
         }
     }
 

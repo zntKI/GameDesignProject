@@ -11,15 +11,11 @@ public class CameraFollowPlayer : MonoBehaviour
     private float smoothTime = 0.25f;
     private Vector3 velocity = Vector3.zero;
 
-    private float originalSize;
-
     private bool shouldDoAdvanced = false;
 
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
-
-        originalSize = this.gameObject.GetComponent<Camera>().orthographicSize;
     }
 
     // Update is called once per frame
